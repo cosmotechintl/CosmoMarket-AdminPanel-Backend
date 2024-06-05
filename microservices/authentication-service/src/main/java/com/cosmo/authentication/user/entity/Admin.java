@@ -2,7 +2,6 @@ package com.cosmo.authentication.user.entity;
 
 import com.cosmo.authentication.role.entity.AccessGroup;
 import com.cosmo.authentication.role.entity.AccessGroupRoleMap;
-import com.cosmo.authentication.role.entity.Roles;
 import com.cosmo.common.abstractEntity.AbstractEntity;
 import com.cosmo.common.entity.Status;
 import jakarta.persistence.*;
@@ -11,10 +10,8 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter

@@ -3,8 +3,7 @@ package com.cosmo.adminservice.accessgroup.service.impl;
 import com.cosmo.adminservice.accessgroup.mapper.AccessGroupMapper;
 import com.cosmo.adminservice.accessgroup.model.AccessGroupModel;
 import com.cosmo.adminservice.accessgroup.model.AccessGroupResponse;
-import com.cosmo.adminservice.accessgroup.model.AccessGroupRoleMapModel;
-import com.cosmo.adminservice.accessgroup.repository.AccessGroupRepository;
+import com.cosmo.authentication.user.repo.AccessGroupRepository;
 import com.cosmo.adminservice.accessgroup.service.AccessGroupService;
 import com.cosmo.authentication.role.entity.AccessGroup;
 import com.cosmo.authentication.role.entity.AccessGroupRoleMap;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +27,7 @@ public class AccessGroupServiceImpl implements AccessGroupService {
     private final AccessGroupMapper accessGroupMapper;
     private final StatusRepository statusRepository;
     private final RolesRepository rolesRepository;
+
 
     @Transactional
     @Override

@@ -17,4 +17,6 @@ public class ApiConstant {
     public static final String GET = "get";
     public static final String ROLES ="roles";
     public static final String EDIT = "edit";
+    public static final String ACCESS_GROUP = "accessGroup";
+    public static final String ADMIN_USER = "adminUser";
 }

@@ -2,11 +2,15 @@ package com.cosmo.authentication.role.entity;
 
 import com.cosmo.common.abstractEntity.AbstractEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "access_group_role_map")
 public class AccessGroupRoleMap extends AbstractEntity {
@@ -23,3 +27,4 @@ public class AccessGroupRoleMap extends AbstractEntity {
     private Roles roles;
 
 }
+
