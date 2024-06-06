@@ -2,6 +2,8 @@ package com.cosmo.authentication.user.controller;
 
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.model.AdminDto;
+import com.cosmo.authentication.user.model.request.AdminUserRequest;
+import com.cosmo.authentication.user.model.request.UsernameRequest;
 import com.cosmo.authentication.user.service.AdminService;
 import com.cosmo.common.constant.ApiConstant;
 import com.cosmo.common.model.ApiResponse;
@@ -17,40 +19,37 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     private final AdminService adminService;
 
-    @PostMapping
+    @PostMapping(ApiConstant.CREATE)
     public ResponseEntity<Admin> addAdmin(@RequestBody AdminDto adminDto) {
 
         return ResponseEntity.ok(adminService.createAdmin(adminDto));
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<?>> getAllAdmins(
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
-    ) {
-        SearchParam searchParam = new SearchParam();
-        searchParam.setFirstRow(pageNo);
-        searchParam.setPageSize(pageSize);
+    @GetMapping()
+    public ResponseEntity<ApiResponse<?>> getAllAdmins(@RequestBody SearchParam searchParam) {
+
         return ResponseEntity.ok().body(adminService.getAllAdminUsers(searchParam));
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<ApiResponse<?>> getAdminById(@PathVariable String username) {
+    @GetMapping(ApiConstant.GET)
+    public ResponseEntity<ApiResponse<?>> getAdminByUsername(@RequestBody UsernameRequest usernameRequest) {
+        String username = usernameRequest.getUsername();
         return ResponseEntity.ok(adminService.getAdminByUsername(username));
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<ApiResponse<AdminDto>> updateAdmin(@PathVariable Long id, @RequestBody AdminDto adminDto) {
-        AdminDto response= (AdminDto)adminService.updateAdmin(id, adminDto);
-        ApiResponse<AdminDto> apiResponse= new ApiResponse<>();
+    @PutMapping(ApiConstant.EDIT)
+    public ResponseEntity<ApiResponse<AdminUserRequest>> updateAdmin(@RequestBody AdminUserRequest adminUserRequest) {
+        AdminUserRequest response= (AdminUserRequest) adminService.updateAdmin(adminUserRequest);
+        ApiResponse<AdminUserRequest> apiResponse= new ApiResponse<>();
         apiResponse.setHttpStatus(HttpStatus.OK);
         apiResponse.setMessage("admin updated successfully");
         apiResponse.setData(response);
         return new ResponseEntity<>(apiResponse,HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{username}")
-    public ResponseEntity<ApiResponse<String>> deleteAdminUser(@PathVariable String username){
+    @DeleteMapping(ApiConstant.DELETE)
+    public ResponseEntity<ApiResponse<String>> deleteAdminUser(@RequestBody UsernameRequest usernameRequest){
+        String username = usernameRequest.getUsername();
         adminService.deleteAdmin(username);
         ApiResponse<String> apiResponse= new ApiResponse<>();
         apiResponse.setHttpStatus(HttpStatus.OK);

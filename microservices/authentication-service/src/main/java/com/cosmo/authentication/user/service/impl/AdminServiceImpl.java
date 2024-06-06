@@ -3,6 +3,7 @@ package com.cosmo.authentication.user.service.impl;
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.mapper.AdminMapper;
 import com.cosmo.authentication.user.model.AdminDto;
+import com.cosmo.authentication.user.model.request.AdminUserRequest;
 import com.cosmo.authentication.user.repo.AdminRepository;
 import com.cosmo.authentication.user.service.AdminService;
 import com.cosmo.common.entity.Status;
@@ -64,12 +65,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public Object updateAdmin(Long id, AdminDto adminDto) {
-        Admin existedAdmin= adminRepository.findById(id).orElseThrow(()->
-                new ResourceNotFoundException("Admin with id "+id+" not found"));
-        Admin updateAdmin = adminMapper.updateAdmin(adminDto,existedAdmin);
+    public Object updateAdmin(AdminUserRequest adminUserRequest) {
+        Admin existedAdmin= adminRepository.findById(adminUserRequest.getId()).orElseThrow(()->
+                new ResourceNotFoundException("Admin with id "+adminUserRequest.getId()+" not found"));
+        Admin updateAdmin = adminMapper.updateAdmin(adminUserRequest,existedAdmin);
         Admin savedAdmin= adminRepository.save(updateAdmin);
-        return adminMapper.mapToDto(savedAdmin);
+        return adminMapper.mapToRequest(savedAdmin);
     }
 
     @Override
