@@ -4,6 +4,7 @@ import com.cosmo.authentication.accessgroup.model.CreateAccessGroupModel;
 import com.cosmo.authentication.accessgroup.model.SearchAccessGroupResponse;
 import com.cosmo.authentication.accessgroup.entity.AccessGroup;
 import com.cosmo.authentication.accessgroup.model.AccessGroupDetailDto;
+import com.cosmo.authentication.accessgroup.repo.AccessGroupRepository;
 import com.cosmo.common.constant.StatusConstant;
 import com.cosmo.common.mapper.StatusMapper;
 import com.cosmo.common.repository.StatusRepository;
@@ -24,6 +25,9 @@ public abstract class AccessGroupMapper {
     @Autowired
     protected StatusMapper statusMapper;
 
+    @Autowired
+    protected AccessGroupRepository accessGroupRepository;
+
     public AccessGroup toEntity(CreateAccessGroupModel createAccessGroupModel) {
         AccessGroup accessGroup = new AccessGroup();
         accessGroup.setName(createAccessGroupModel.getName());
@@ -31,7 +35,7 @@ public abstract class AccessGroupMapper {
         accessGroup.setCreatedAt(new Date());
         accessGroup.setSuperAdminGroup(false);
         accessGroup.setStatus(statusRepository.findByName(StatusConstant.ACTIVE.getName()));
-        return accessGroup;
+        return accessGroupRepository.save(accessGroup);
     }
 
     public SearchAccessGroupResponse entityToDto(AccessGroup accessGroup) {
