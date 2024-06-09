@@ -1,10 +1,10 @@
 package com.cosmo.authentication.user.mapper;
 
-import com.cosmo.authentication.role.entity.AccessGroup;
+import com.cosmo.authentication.accessgroup.entity.AccessGroup;
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.model.AdminDto;
 import com.cosmo.authentication.user.model.request.AdminUserRequest;
-import com.cosmo.authentication.user.repo.AccessGroupRepository;
+import com.cosmo.authentication.accessgroup.repo.AccessGroupRepository;
 import com.cosmo.common.entity.Status;
 import com.cosmo.common.exception.ResourceNotFoundException;
 import com.cosmo.common.repository.StatusRepository;

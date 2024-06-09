@@ -77,3 +77,13 @@ management.endpoints.web.exposure.include: "*"
 #  pathsToMatch: /**
 #  cache.disabled: true
 
+logging:
+  level:
+    org:
+      springframework:
+        transaction: DEBUG
+        orm:
+          jpa:
+            JpaTransactionManager: DEBUG
+
+

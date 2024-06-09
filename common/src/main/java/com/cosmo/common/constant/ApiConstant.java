@@ -19,4 +19,7 @@ public class ApiConstant {
     public static final String EDIT = "edit";
     public static final String ACCESS_GROUP = "accessGroup";
     public static final String ADMIN_USER = "adminUser";
+    public static final String SLASH = "/";
+    public static final String DETAIL = "detail";
+    public static final String NAVIGATION = "navigation";
 }

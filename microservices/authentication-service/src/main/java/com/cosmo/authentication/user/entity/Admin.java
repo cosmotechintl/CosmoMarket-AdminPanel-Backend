@@ -1,15 +1,18 @@
 package com.cosmo.authentication.user.entity;
 
-import com.cosmo.authentication.role.entity.AccessGroup;
-import com.cosmo.authentication.role.entity.AccessGroupRoleMap;
+import com.cosmo.authentication.accessgroup.entity.AccessGroup;
+import com.cosmo.authentication.accessgroup.entity.AccessGroupRoleMap;
 import com.cosmo.common.abstractEntity.AbstractEntity;
 import com.cosmo.common.entity.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -75,8 +78,10 @@ public class Admin extends AbstractEntity implements UserDetails {
     @Column(name = "is_super_admin")
     private boolean isSuperAdmin;
 
+    @Transactional
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        Hibernate.initialize(this.accessGroup.getAccessGroupRoleMaps());
         return this.accessGroup
                 .getAccessGroupRoleMaps()
                 .stream()
