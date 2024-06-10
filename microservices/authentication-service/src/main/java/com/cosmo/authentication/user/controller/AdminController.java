@@ -37,7 +37,7 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getAdminByUsername(username));
     }
 
-    @PutMapping(ApiConstant.EDIT)
+    @PostMapping(ApiConstant.EDIT)
     public ResponseEntity<ApiResponse<AdminUserRequest>> updateAdmin(@RequestBody AdminUserRequest adminUserRequest) {
         AdminUserRequest response= (AdminUserRequest) adminService.updateAdmin(adminUserRequest);
         ApiResponse<AdminUserRequest> apiResponse= new ApiResponse<>();
@@ -47,7 +47,7 @@ public class AdminController {
         return new ResponseEntity<>(apiResponse,HttpStatus.OK);
     }
 
-    @DeleteMapping(ApiConstant.DELETE)
+    @PostMapping(ApiConstant.DELETE)
     public ResponseEntity<ApiResponse<String>> deleteAdminUser(@RequestBody UsernameRequest usernameRequest){
         String username = usernameRequest.getUsername();
         adminService.deleteAdmin(username);

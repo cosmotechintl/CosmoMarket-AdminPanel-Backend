@@ -54,13 +54,14 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ApiResponse<?> getAdminByUsername(String username) {
-        Optional<Admin> admin= adminRepository.findByUsername(username);
-        if(admin.isEmpty()){
-            return ResponseUtil.getNotFoundResponse("admin with name "+username+" not found");
-        }
-        else {
-        return ResponseUtil.getSuccessfulApiResponse(admin,"admin fetched successfully");
-    }
+        return null;
+//        Optional<Admin> admin= adminRepository.findByUsername(username);
+//        if(admin.isEmpty()){
+//            return ResponseUtil.getNotFoundResponse("admin with name "+username+" not found");
+//        }
+//        else {
+//        return ResponseUtil.getSuccessfulApiResponse(admin,"admin fetched successfully");
+//    }
     }
 
     @Override
@@ -76,11 +77,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public void deleteAdmin(String username) {
-    Admin admin= adminRepository.findByUsername(username).orElseThrow(()->
-            new IllegalArgumentException("Admin does not exist"));
-        Status deletedStatus = statusRepository.findByName("DELETED");
-        admin.setStatus(deletedStatus);
-        adminRepository.save(admin);
+//    Admin admin= adminRepository.findByUsername(username).orElseThrow(()->
+//            new IllegalArgumentException("Admin does not exist"));
+//        Status deletedStatus = statusRepository.findByName("DELETED");
+//        admin.setStatus(deletedStatus);
+//        adminRepository.save(admin);
     }
 
 }
