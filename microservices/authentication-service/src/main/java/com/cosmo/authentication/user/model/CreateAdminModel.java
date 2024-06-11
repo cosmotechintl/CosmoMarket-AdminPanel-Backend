@@ -1,5 +1,6 @@
 package com.cosmo.authentication.user.model;
 
+import com.cosmo.authentication.accessgroup.entity.AccessGroup;
 import com.cosmo.authentication.accessgroup.model.AccessGroupDto;
 import com.cosmo.common.model.ModelBase;
 import jakarta.validation.constraints.Email;
