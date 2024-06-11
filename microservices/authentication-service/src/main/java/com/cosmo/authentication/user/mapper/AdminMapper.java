@@ -1,13 +1,57 @@
 package com.cosmo.authentication.user.mapper;
 
+import com.cosmo.authentication.accessgroup.entity.AccessGroup;
+import com.cosmo.authentication.accessgroup.model.SearchAccessGroupResponse;
+import com.cosmo.authentication.accessgroup.repo.AccessGroupRepository;
 import com.cosmo.authentication.user.entity.Admin;
-import com.cosmo.authentication.user.model.AdminDto;
-import com.cosmo.authentication.user.model.request.AdminUserRequest;
+import com.cosmo.authentication.user.model.AdminUserDetailDto;
+import com.cosmo.authentication.user.model.CreateAdminModel;
+import com.cosmo.authentication.user.model.SearchAdminUserResponse;
+import com.cosmo.authentication.user.repo.AdminRepository;
+import com.cosmo.common.constant.StatusConstant;
+import com.cosmo.common.exception.ResourceNotFoundException;
+import com.cosmo.common.repository.StatusRepository;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-public interface AdminMapper {
-    AdminDto mapToDto(Admin admin);
-    Admin mapToEntity(AdminDto adminDto);
-    Admin updateAdmin(AdminUserRequest adminUserRequest, Admin existedAdmin);
-    Admin requestToEntity(AdminUserRequest adminUserRequest);
-    AdminUserRequest mapToRequest(Admin admin);
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+public abstract class AdminMapper {
+
+    @Autowired
+    protected StatusRepository statusRepository;
+    @Autowired
+    protected AccessGroupRepository accessGroupRepository;
+    @Autowired
+    protected AdminRepository adminRepository;
+    @Autowired
+    protected PasswordEncoder passwordEncoder;
+
+   public Admin mapToEntity(CreateAdminModel createAdminModel){
+       Admin admin= new Admin();
+
+       admin.setName(createAdminModel.getName());
+       admin.setMobileNumber(createAdminModel.getMobileNumber());
+       admin.setAddress(createAdminModel.getAddress());
+       admin.setEmail(createAdminModel.getEmail());
+       admin.setAccessGroup(accessGroupRepository.findByName(createAdminModel.getAccessGroup().getName()).orElseThrow(
+               ()-> new ResourceNotFoundException("access group not found")
+       ));
+       admin.setUsername(createAdminModel.getEmail());
+       admin.setActive(true);
+       admin.setStatus(statusRepository.findByName(StatusConstant.PENDING.getName()));
+       admin.setSuperAdmin(false);
+       return admin;
+   }
+   public abstract SearchAdminUserResponse entityToResponse(Admin admin);
+
+   public List<SearchAdminUserResponse> getAdminUserResponses(List<Admin> admins){
+       return admins.stream().map(this::entityToResponse).collect(Collectors.toList());
+   }
+    public abstract AdminUserDetailDto getAdminUserDetailDto(Admin admin);
 }

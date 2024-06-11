@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000/")
 @RequestMapping(ApiConstant.AUTHENTICATE)
 @AllArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    @CrossOrigin(origins = "http://localhost:3000/")
     @PostMapping()
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
