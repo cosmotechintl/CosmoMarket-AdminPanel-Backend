@@ -1,15 +1,19 @@
 package com.cosmo.authentication.accessgroup.service.impl;
 
+import com.cosmo.authentication.accessgroup.entity.AccessGroupRoleMap;
 import com.cosmo.authentication.accessgroup.mapper.AccessGroupMapper;
 import com.cosmo.authentication.accessgroup.mapper.AccessGroupRoleMapMapper;
+import com.cosmo.authentication.accessgroup.model.AccessGroupRoleMapDto;
 import com.cosmo.authentication.accessgroup.model.CreateAccessGroupModel;
 import com.cosmo.authentication.accessgroup.model.SearchAccessGroupResponse;
 import com.cosmo.authentication.accessgroup.model.request.FetchAccessGroupDetail;
+import com.cosmo.authentication.accessgroup.model.request.UpdateAccessGroupRequest;
 import com.cosmo.authentication.accessgroup.service.AccessGroupService;
 import com.cosmo.authentication.accessgroup.entity.AccessGroup;
 import com.cosmo.authentication.accessgroup.model.AccessGroupDetailDto;
 import com.cosmo.authentication.accessgroup.repo.AccessGroupRepository;
 import com.cosmo.authentication.accessgroup.repo.AccessGroupSearchRepository;
+import com.cosmo.common.exception.ResourceNotFoundException;
 import com.cosmo.common.model.ApiResponse;
 import com.cosmo.common.model.PageableResponse;
 import com.cosmo.common.model.SearchParam;
@@ -21,7 +25,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -43,9 +49,23 @@ public class AccessGroupServiceImpl implements AccessGroupService {
     }
 
     @Override
-    public AccessGroup updateAccessGroup(Long id, AccessGroup accessGroup) {
-        return null;
-    }
+    @Transactional
+    public Mono<ApiResponse<?>> updateAccessGroup(UpdateAccessGroupRequest request) {
+        Optional<AccessGroup> existedAccessGroup = accessGroupRepository.findById(request.getId());
+
+        if (existedAccessGroup.isPresent()){
+            AccessGroup updatedAccessGroup= accessGroupMapper.updateAccessGroup(request,existedAccessGroup.get());
+            List<AccessGroupRoleMap> existedAccessGroupRoleMap = existedAccessGroup.get().getAccessGroupRoleMaps();
+            List<AccessGroupRoleMap> updatedAccessGroupRoleMap = existedAccessGroupRoleMap.stream()
+                    .map(existedAccessGroupRoleMaps -> accessGroupRoleMapMapper.partialUpdate((AccessGroupRoleMapDto) request.getAccessGroupRoleMaps(),existedAccessGroupRoleMaps))
+                    .collect(Collectors.toList());
+            updatedAccessGroup.setAccessGroupRoleMaps(updatedAccessGroupRoleMap);
+            accessGroupRepository.save(updatedAccessGroup);
+            return Mono.just(ResponseUtil.getSuccessfulApiResponse("access group updated successfully"));
+            }
+        else {
+            return Mono.just(ResponseUtil.getNotFoundResponse("access group not found"));
+    }}
 
     @Override
     public void deleteAccessGroup(Long id) {
