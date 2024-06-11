@@ -1,17 +1,16 @@
 package com.cosmo.authentication.user.service;
 
-import com.cosmo.authentication.user.entity.Admin;
-import com.cosmo.authentication.user.model.AdminDto;
-import com.cosmo.authentication.user.model.request.AdminUserRequest;
+
+import com.cosmo.authentication.user.model.CreateAdminModel;
+import com.cosmo.authentication.user.model.FetchAdminDetail;
 import com.cosmo.common.model.ApiResponse;
 import com.cosmo.common.model.SearchParam;
+import reactor.core.publisher.Mono;
 
 
 public interface AdminService {
 
-    Admin createAdmin(AdminDto adminDto);
-    ApiResponse<?> getAllAdminUsers(SearchParam searchParam);
-    ApiResponse<?> getAdminByUsername(String username);
-    Object updateAdmin(AdminUserRequest adminUserRequest);
-    void deleteAdmin(String username);
+    Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel);
+    Mono<ApiResponse<?>> getAllAdminUsers(SearchParam searchParam);
+    Mono<ApiResponse<?>> getAdminUserDetails(FetchAdminDetail fetchAdminDetail);
 }
