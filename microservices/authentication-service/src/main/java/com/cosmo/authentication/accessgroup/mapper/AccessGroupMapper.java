@@ -43,7 +43,7 @@ public abstract class AccessGroupMapper {
         accessGroup.setDescription(createAccessGroupModel.getDescription());
         accessGroup.setCreatedAt(new Date());
         accessGroup.setSuperAdminGroup(false);
-        accessGroup.setType(createAccessGroupModel.getType());
+        accessGroup.setType(typeRepository.findByName(createAccessGroupModel.getType().getName()));
         accessGroup.setStatus(statusRepository.findByName(StatusConstant.ACTIVE.getName()));
         return accessGroupRepository.save(accessGroup);
     }
@@ -54,7 +54,7 @@ public abstract class AccessGroupMapper {
     public List<SearchAccessGroupResponse> getAccessGroupResponses(List<AccessGroup> accessGroups) {
         return accessGroups.stream().map(this::entityToResponse).collect(Collectors.toList());
     }
-        public abstract AccessGroupDetailDto getAccessGroupDetailDto(AccessGroup accessGroup);
+    public abstract AccessGroupDetailDto getAccessGroupDetailDto(AccessGroup accessGroup);
 
     public AccessGroup updateAccessGroup(UpdateAccessGroupRequest request, AccessGroup accessGroup){
         if (request==null || accessGroup ==null){

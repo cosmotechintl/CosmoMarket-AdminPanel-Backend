@@ -23,7 +23,7 @@ public abstract class AccessGroupRoleMapMapper {
     AccessGroupRoleMapRepository accessGroupRoleMapRepository;
 
     public List<AccessGroupRoleMap> createAccessGroupRoleMap(AccessGroup accessGroup, List<AssignRoleModel> roles) {
-        List<Integer> assignedRoleId = roles.stream().map(AssignRoleModel::getRoleId).toList();
+        List<Long> assignedRoleId = roles.stream().map(AssignRoleModel::getRoleId).toList();
         List<Roles> allRoles = rolesService.getAllRoles();
         List<AccessGroupRoleMap> accessGroupRoleMaps = allRoles.stream().map(role -> {
             AccessGroupRoleMap accessGroupRoleMap = new AccessGroupRoleMap();
