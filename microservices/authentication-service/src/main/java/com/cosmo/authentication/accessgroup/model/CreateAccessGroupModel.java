@@ -19,9 +19,8 @@ public class CreateAccessGroupModel extends ModelBase {
     private String name;
     @NotBlank(message = "Descriptions is required.")
     private String description;
-
-    @NotBlank(message = "Type is required")
-    private Type type;
+    @NotNull(message = "Type is required")
+    private TypeDto type;
     @Valid
     @NotNull
     private List<AssignRoleModel> roles;
