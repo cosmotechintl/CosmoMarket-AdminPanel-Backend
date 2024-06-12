@@ -7,6 +7,7 @@ import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.model.AdminUserDetailDto;
 import com.cosmo.authentication.user.model.CreateAdminModel;
 import com.cosmo.authentication.user.model.SearchAdminUserResponse;
+import com.cosmo.authentication.user.model.request.UpdateAdminRequest;
 import com.cosmo.authentication.user.repo.AdminRepository;
 import com.cosmo.common.constant.StatusConstant;
 import com.cosmo.common.exception.ResourceNotFoundException;
@@ -43,11 +44,21 @@ public abstract class AdminMapper {
                ()-> new ResourceNotFoundException("access group not found")
        ));
        admin.setUsername(createAdminModel.getEmail());
-       admin.setActive(true);
+       admin.setActive(false);
        admin.setStatus(statusRepository.findByName(StatusConstant.PENDING.getName()));
        admin.setSuperAdmin(false);
        return admin;
    }
+   public Admin updateAdminUser(UpdateAdminRequest request, Admin admin){
+       admin.setName(request.getName());
+       admin.setMobileNumber(request.getMobileNumber());
+       admin.setAddress(request.getAddress());
+       admin.setAccessGroup(accessGroupRepository.findByName(request.getAccessGroup().getName()).orElseThrow(
+               ()-> new ResourceNotFoundException("access group not found")
+       ));
+       return admin;
+   }
+
    public abstract SearchAdminUserResponse entityToResponse(Admin admin);
 
    public List<SearchAdminUserResponse> getAdminUserResponses(List<Admin> admins){
