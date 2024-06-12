@@ -104,7 +104,7 @@ public class AdminServiceImpl implements AdminService {
         }
         else {
             Admin admin1= admin.get();
-            if("DELETED".equals(admin1.getStatus().getName())){
+            if("DELETED".equals(admin1.getStatus().getName()) || "BLOCKED".equals(admin1.getStatus().getName()) ){
                 return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
             }
             else {
