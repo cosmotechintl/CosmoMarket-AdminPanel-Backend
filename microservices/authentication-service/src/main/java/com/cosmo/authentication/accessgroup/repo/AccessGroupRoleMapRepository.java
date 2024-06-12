@@ -17,4 +17,6 @@ public interface AccessGroupRoleMapRepository extends JpaRepository<AccessGroupR
 
     @Query("SELECT rgm.roles FROM AccessGroupRoleMap rgm WHERE rgm.accessGroup.id = :groupId AND rgm.isActive = true ")
     List<Roles> getRolesByAccessGroup(@Param("groupId") Long groupId);
+
+    AccessGroupRoleMap findByAccessGroupAndRoles(AccessGroup accessGroup, Roles role);
 }

@@ -35,6 +35,23 @@ public abstract class AccessGroupRoleMapMapper {
 
         return accessGroupRoleMapRepository.saveAll(accessGroupRoleMaps);
     }
+    public List<AccessGroupRoleMap> updateAccessGroupRoleMap(AccessGroup accessGroup, List<AssignRoleModel> roles) {
+        List<Long> assignedRoleId = roles.stream().map(AssignRoleModel::getRoleId).toList();
+        List<Roles> allRoles = rolesService.getAllRoles();
+
+        List<AccessGroupRoleMap> accessGroupRoleMaps = allRoles.stream().map(role -> {
+            AccessGroupRoleMap accessGroupRoleMap = accessGroupRoleMapRepository.findByAccessGroupAndRoles(accessGroup, role);
+            if (accessGroupRoleMap == null) {
+                accessGroupRoleMap = new AccessGroupRoleMap();
+                accessGroupRoleMap.setAccessGroup(accessGroup);
+                accessGroupRoleMap.setRoles(role);
+            }
+            accessGroupRoleMap.setIsActive(assignedRoleId.contains(role.getId()));
+            return accessGroupRoleMap;
+        }).collect(Collectors.toList());
+
+        return accessGroupRoleMapRepository.saveAll(accessGroupRoleMaps);
+    }
 
     public abstract AccessGroupRoleMap toEntity(AccessGroupRoleMapDto accessGroupRoleMapDto);
 
