@@ -1,6 +1,6 @@
 package com.cosmo.authentication.accessgroup.model.request;
 
-import com.cosmo.authentication.accessgroup.model.AccessGroupRoleMapDetailDto;
+import com.cosmo.authentication.accessgroup.model.AssignRoleModel;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,5 +19,5 @@ public class UpdateAccessGroupRequest
     private String description;
     @Valid
     @NotNull
-    private List<AccessGroupRoleMapDetailDto> accessGroupRoleMaps;
+    private List<AssignRoleModel> roles;
 }
