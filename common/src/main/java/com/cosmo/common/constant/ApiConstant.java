@@ -12,6 +12,7 @@ public class ApiConstant {
     public static final String UPLOAD_IMAGE = "uploadImage";
     public static final String MODIFY = "modify";
     public static final String DELETE = "delete";
+    public static final String BLOCK = "block";
     public static final String CODE = "code";
     public static final String GET_BY_CODE ="getByCode" ;
     public static final String GET = "get";

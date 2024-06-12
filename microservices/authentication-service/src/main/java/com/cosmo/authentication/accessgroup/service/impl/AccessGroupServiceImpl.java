@@ -13,7 +13,6 @@ import com.cosmo.authentication.accessgroup.entity.AccessGroup;
 import com.cosmo.authentication.accessgroup.model.AccessGroupDetailDto;
 import com.cosmo.authentication.accessgroup.repo.AccessGroupRepository;
 import com.cosmo.authentication.accessgroup.repo.AccessGroupSearchRepository;
-import com.cosmo.common.exception.ResourceNotFoundException;
 import com.cosmo.common.model.ApiResponse;
 import com.cosmo.common.model.PageableResponse;
 import com.cosmo.common.model.SearchParam;
