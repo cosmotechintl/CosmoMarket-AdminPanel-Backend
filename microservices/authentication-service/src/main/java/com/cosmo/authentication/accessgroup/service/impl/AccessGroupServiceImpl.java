@@ -37,6 +37,10 @@ public class AccessGroupServiceImpl implements AccessGroupService {
     @Override
     @Transactional
     public Mono<ApiResponse> createAccessGroup(CreateAccessGroupModel createAccessGroupModel) {
+        Optional<AccessGroup> existedAccessGroup= accessGroupRepository.findByName(createAccessGroupModel.getName());
+        if(existedAccessGroup.isPresent()){
+            return Mono.just(ResponseUtil.getFailureResponse("This name is already taken. Please use different name."));
+        }
         AccessGroup accessGroup = accessGroupMapper.toEntity(createAccessGroupModel);
         accessGroupRoleMapMapper.createAccessGroupRoleMap(accessGroup, createAccessGroupModel.getRoles());
         return Mono.just(ResponseUtil.getSuccessfulApiResponse("Access group created"));
