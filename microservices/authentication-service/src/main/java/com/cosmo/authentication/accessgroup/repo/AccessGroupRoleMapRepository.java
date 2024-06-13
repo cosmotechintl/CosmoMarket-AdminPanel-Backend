@@ -19,4 +19,5 @@ public interface AccessGroupRoleMapRepository extends JpaRepository<AccessGroupR
     List<Roles> getRolesByAccessGroup(@Param("groupId") Long groupId);
 
     AccessGroupRoleMap findByAccessGroupAndRoles(AccessGroup accessGroup, Roles role);
+    List<AccessGroupRoleMap> findByAccessGroup(AccessGroup accessGroup);
 }

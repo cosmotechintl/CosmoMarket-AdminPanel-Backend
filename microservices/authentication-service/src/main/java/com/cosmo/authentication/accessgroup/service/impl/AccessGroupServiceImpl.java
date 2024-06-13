@@ -53,14 +53,18 @@ public class AccessGroupServiceImpl implements AccessGroupService {
     @Transactional
     public Mono<ApiResponse<?>> updateAccessGroup(UpdateAccessGroupRequest request) {
         Optional<AccessGroup> existedAccessGroup = accessGroupRepository.findById(request.getId());
-
+        Optional<AccessGroup> existedName= accessGroupRepository.findByName(request.getName());
+        if (existedName.isPresent() && !existedName.get().getId().equals(request.getId())){
+            return Mono.just(ResponseUtil.getFailureResponse("Access group name already exists"));
+        }
         if (existedAccessGroup.isPresent()){
             AccessGroup updatedAccessGroup= accessGroupMapper.updateAccessGroup(request,existedAccessGroup.get());
+            accessGroupRepository.save(updatedAccessGroup);
             accessGroupRoleMapMapper.updateAccessGroupRoleMap(updatedAccessGroup,request.getRoles());
-            return Mono.just(ResponseUtil.getSuccessfulApiResponse("access group updated successfully"));
+            return Mono.just(ResponseUtil.getSuccessfulApiResponse("Access group updated successfully"));
             }
         else {
-            return Mono.just(ResponseUtil.getNotFoundResponse("access group not found"));
+            return Mono.just(ResponseUtil.getNotFoundResponse("Access group not found"));
     }}
 
     @Override
@@ -99,7 +103,7 @@ public class AccessGroupServiceImpl implements AccessGroupService {
             return Mono.just(ResponseUtil.getNotFoundResponse("Access group  not found"));
         } else {
             AccessGroupDetailDto accessGroupDetailDto = accessGroupMapper.getAccessGroupDetailDto(accessGroup.get());
-            return Mono.just(ResponseUtil.getSuccessfulApiResponse(accessGroupDetailDto, "access group fetched successfully"));
+            return Mono.just(ResponseUtil.getSuccessfulApiResponse(accessGroupDetailDto, "Access group fetched successfully"));
         }
     }
 
