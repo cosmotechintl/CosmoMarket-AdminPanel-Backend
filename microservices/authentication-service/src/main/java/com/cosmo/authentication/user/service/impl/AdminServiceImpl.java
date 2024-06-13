@@ -37,6 +37,14 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel) {
+        Optional<Admin> existedAdminUser = adminRepository.findByUsername(createAdminModel.getEmail());
+        if (existedAdminUser.isPresent()) {
+            return Mono.just(ResponseUtil.getFailureResponse("This email is already linked to another account. Please use a different email"));
+        }
+        Optional<Admin> existedNumber= adminRepository.findByMobileNumber(createAdminModel.getMobileNumber());
+        if (existedNumber.isPresent()){
+            return Mono.just(ResponseUtil.getFailureResponse("The entered mobile number is already linked to another account. Please use a different number"));
+        }
         Admin admin = adminMapper.mapToEntity(createAdminModel);
           adminRepository.save(admin);
         return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin User Created Successfully"));
@@ -67,9 +75,12 @@ public class AdminServiceImpl implements AdminService {
             return Mono.just(ResponseUtil.getSuccessfulApiResponse(adminUserDetailDto,"Admin user fetched successfully"));
         }
     }
-
     @Override
     public Mono<ApiResponse<?>> updateAdminUser(UpdateAdminRequest updateAdminRequest) {
+        Optional<Admin> existedNumber= adminRepository.findByMobileNumber(updateAdminRequest.getMobileNumber());
+        if (existedNumber.isPresent() && !existedNumber.get().getId().equals(updateAdminRequest.getId())){
+            return Mono.just(ResponseUtil.getFailureResponse("The entered mobile number is already linked to another account. Please use a different number"));
+        }
         Optional<Admin> admin= adminRepository.findById(updateAdminRequest.getId());
         if(admin.isPresent()){
             Admin updatedAdmin = adminMapper.updateAdminUser(updateAdminRequest, admin.get());
