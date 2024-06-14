@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface AccessGroupRoleMapRepository extends JpaRepository<AccessGroupRoleMap, Long> {
@@ -20,4 +19,5 @@ public interface AccessGroupRoleMapRepository extends JpaRepository<AccessGroupR
 
     AccessGroupRoleMap findByAccessGroupAndRoles(AccessGroup accessGroup, Roles role);
     List<AccessGroupRoleMap> findByAccessGroup(AccessGroup accessGroup);
+
 }

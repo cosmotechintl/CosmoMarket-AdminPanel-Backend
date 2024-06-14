@@ -1,11 +1,11 @@
 package com.cosmo.authentication.accessgroup.mapper;
 
-import com.cosmo.authentication.accessgroup.model.AssignRoleModel;
 import com.cosmo.authentication.accessgroup.entity.AccessGroup;
 import com.cosmo.authentication.accessgroup.entity.AccessGroupRoleMap;
+import com.cosmo.authentication.accessgroup.model.AccessGroupRoleMapDto;
+import com.cosmo.authentication.accessgroup.model.AssignRoleModel;
 import com.cosmo.authentication.accessgroup.repo.AccessGroupRoleMapRepository;
 import com.cosmo.authentication.role.entity.Roles;
-import com.cosmo.authentication.accessgroup.model.AccessGroupRoleMapDto;
 import com.cosmo.authentication.role.repository.RolesRepository;
 import com.cosmo.authentication.role.service.RolesService;
 import com.cosmo.common.exception.ResourceNotFoundException;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
@@ -42,6 +41,23 @@ public abstract class AccessGroupRoleMapMapper {
 
         return accessGroupRoleMapRepository.saveAll(accessGroupRoleMaps);
     }
+//    public List<AccessGroupRoleMap> updateAccessGroupRoleMap(AccessGroup accessGroup, List<AssignRoleModel> roles) {
+//        List<Long> assignedRoleId = roles.stream().map(AssignRoleModel::getRoleId).toList();
+//        List<Roles> allRoles = rolesService.getAllRoles();
+//
+//        List<AccessGroupRoleMap> accessGroupRoleMaps = allRoles.stream().map(role -> {
+//            AccessGroupRoleMap accessGroupRoleMap = accessGroupRoleMapRepository.findByAccessGroupAndRoles(accessGroup, role);
+//            if (accessGroupRoleMap == null) {
+//                accessGroupRoleMap = new AccessGroupRoleMap();
+//                accessGroupRoleMap.setAccessGroup(accessGroup);
+//                accessGroupRoleMap.setRoles(role);
+//            }
+//            accessGroupRoleMap.setIsActive(assignedRoleId.contains(role.getId()));
+//            return accessGroupRoleMap;
+//        }).collect(Collectors.toList());
+//
+//        return accessGroupRoleMapRepository.saveAll(accessGroupRoleMaps);
+//    }
     public List<AccessGroupRoleMap> updateAccessGroupRoleMap(AccessGroup accessGroup, List<AssignRoleModel> roles) {
         List<Long> assignedRoleId = roles.stream().map(AssignRoleModel::getRoleId).toList();
         List<AccessGroupRoleMap> existingRoleMaps= accessGroupRoleMapRepository.findByAccessGroup(accessGroup);
