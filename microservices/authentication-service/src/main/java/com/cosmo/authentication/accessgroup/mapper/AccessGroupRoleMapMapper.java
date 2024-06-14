@@ -23,7 +23,6 @@ public abstract class AccessGroupRoleMapMapper {
 
     @Autowired
     protected RolesService rolesService;
-
     @Autowired
     AccessGroupRoleMapRepository accessGroupRoleMapRepository;
     @Autowired
