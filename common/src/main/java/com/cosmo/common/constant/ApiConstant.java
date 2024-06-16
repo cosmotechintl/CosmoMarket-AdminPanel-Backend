@@ -13,11 +13,12 @@ public class ApiConstant {
     public static final String MODIFY = "modify";
     public static final String DELETE = "delete";
     public static final String BLOCK = "block";
+    public static final String UNBLOCK = "unblock";
     public static final String CODE = "code";
     public static final String GET_BY_CODE ="getByCode" ;
     public static final String GET = "get";
     public static final String ROLES ="roles";
-    public static final String EDIT = "edit";
+    public static final String UPDATE = "update";
     public static final String ACCESS_GROUP = "accessGroup";
     public static final String ADMIN_USER = "adminUser";
     public static final String SLASH = "/";

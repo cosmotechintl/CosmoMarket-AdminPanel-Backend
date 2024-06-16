@@ -37,8 +37,8 @@ public class AccessGroupController {
     public Mono<ApiResponse<?>> getAccessGroupDetail(@RequestBody @Valid FetchAccessGroupDetail fetchAccessGroupDetail) {
         return accessGroupService.getAccessGroupDetail(fetchAccessGroupDetail);
     }
-    @PostMapping(ApiConstant.EDIT)
-    public Mono<ApiResponse<?>> editAccessGroup(@RequestBody @Valid UpdateAccessGroupRequest request){
+    @PostMapping(ApiConstant.UPDATE)
+    public Mono<ApiResponse<?>> updateAccessGroup(@RequestBody @Valid UpdateAccessGroupRequest request){
         return accessGroupService.updateAccessGroup(request);
 
     }

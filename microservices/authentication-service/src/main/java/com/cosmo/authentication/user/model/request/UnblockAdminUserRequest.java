@@ -6,6 +6,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BlockAdminRequest extends ModelBase {
+public class UnblockAdminUserRequest extends ModelBase {
     private String email;
 }

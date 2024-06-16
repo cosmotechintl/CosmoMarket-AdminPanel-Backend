@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class UpdateAdminRequest extends ModelBase {
 
-        private Long id;
+        private String email;
         @NotBlank(message = "Name cannot be blank")
         private String name;
         @NotBlank(message = "Mobile Number cannot be null")

@@ -8,6 +8,7 @@ import com.cosmo.authentication.user.model.FetchAdminDetail;
 import com.cosmo.authentication.user.model.SearchAdminUserResponse;
 import com.cosmo.authentication.user.model.request.BlockAdminRequest;
 import com.cosmo.authentication.user.model.request.DeleteAdminRequest;
+import com.cosmo.authentication.user.model.request.UnblockAdminUserRequest;
 import com.cosmo.authentication.user.model.request.UpdateAdminRequest;
 import com.cosmo.authentication.user.repo.AdminRepository;
 import com.cosmo.authentication.user.repo.AdminUserSearchRepository;
@@ -21,8 +22,10 @@ import com.cosmo.common.service.SearchResponse;
 import com.cosmo.common.util.ResponseUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -60,40 +63,43 @@ public class AdminServiceImpl implements AdminService {
                 .searchParam(searchParam)
                 .build();
         PageableResponse<SearchAdminUserResponse> response= searchResponse.getSearchResponse(responseBuilder);
-        return Mono.just(ResponseUtil.getSuccessfulApiResponse(response,"Admin users fetched successfully. "));
+        return Mono.just(ResponseUtil.getSuccessfulApiResponse(response,"Admin users fetched successfully"));
 
     }
 
     @Override
     public Mono<ApiResponse<?>> getAdminUserDetails(FetchAdminDetail fetchAdminDetail) {
-        Optional<Admin> admin = adminRepository.findByUsername(fetchAdminDetail.getUsername());
+        Optional<Admin> admin = adminRepository.findByEmail(fetchAdminDetail.getEmail());
         if (admin.isEmpty()){
             return Mono.just(ResponseUtil.getNotFoundResponse("Admin not found"));
         }
         else {
-            AdminUserDetailDto adminUserDetailDto = adminMapper.getAdminUserDetailDto(admin.get());
+            AdminUserDetailDto adminUserDetailDto = adminMapper.getAdminUserDetails(admin.get());
             return Mono.just(ResponseUtil.getSuccessfulApiResponse(adminUserDetailDto,"Admin user fetched successfully"));
         }
     }
     @Override
-    public Mono<ApiResponse<?>> updateAdminUser(UpdateAdminRequest updateAdminRequest) {
+    public Mono<ApiResponse<?>> updateAdminUser(UpdateAdminRequest updateAdminRequest, Principal connectedUser) {
+        var adminUser= ((Admin)((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal());
         Optional<Admin> existedNumber= adminRepository.findByMobileNumber(updateAdminRequest.getMobileNumber());
-        if (existedNumber.isPresent() && !existedNumber.get().getId().equals(updateAdminRequest.getId())){
-            return Mono.just(ResponseUtil.getFailureResponse("The entered mobile number is already linked to another account. Please use a different number"));
+        if (existedNumber.isPresent() && !existedNumber.get().getEmail().equals(updateAdminRequest.getEmail())){
+            return Mono.just(ResponseUtil.getFailureResponse("The mobile number is linked to another account."));
         }
-        Optional<Admin> admin= adminRepository.findById(updateAdminRequest.getId());
-        if(admin.isPresent()){
-            Admin updatedAdmin = adminMapper.updateAdminUser(updateAdminRequest, admin.get());
-            adminRepository.save(updatedAdmin);
-            return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user updated successfully"));
+        Optional<Admin> admin= adminRepository.findByEmail(updateAdminRequest.getEmail());
+        Admin admin1= admin.get();
+        if ("BLOCKED".equals(admin1.getStatus().getName()) ||"DELETED".equals(admin1.getStatus().getName())){
+            return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
         }
         else {
-            return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
-        }}
+            Admin updatedAdmin = adminMapper.updateAdminUser(updateAdminRequest, adminUser);
+            adminRepository.save(updatedAdmin);
+            return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user updated successfully."));
+        }
+    }
 
     @Override
     public Mono<ApiResponse<?>> deleteAdminUser(DeleteAdminRequest deleteAdminRequest) {
-        Optional<Admin> admin= adminRepository.findById(deleteAdminRequest.getId());
+        Optional<Admin> admin= adminRepository.findByEmail(deleteAdminRequest.getEmail());
         if (admin.isEmpty()){
             return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
         }
@@ -109,7 +115,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Mono<ApiResponse<?>> blockAdminUser(BlockAdminRequest blockAdminRequest) {
-        Optional<Admin> admin= adminRepository.findById(blockAdminRequest.getId());
+        Optional<Admin> admin= adminRepository.findByEmail(blockAdminRequest.getEmail());
         if (admin.isEmpty() ){
             return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
         }
@@ -123,6 +129,18 @@ public class AdminServiceImpl implements AdminService {
             adminRepository.save(admin1);
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user blocked successfully"));
         }}
+    }
+
+    @Override
+    public Mono<ApiResponse<?>> unblockAdminUser(UnblockAdminUserRequest unblockAdminRequest) {
+        Optional<Admin> admin=  adminRepository.findByEmail(unblockAdminRequest.getEmail());
+        Admin admin1 = admin.get();
+        if("BLOCKED".equals(admin1.getStatus().getName())){
+            admin1.setStatus(statusRepository.findByName("PENDING"));
+            adminRepository.save(admin1);
+            return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user unblocked successfully"));
+        }
+        return Mono.just(ResponseUtil.getFailureResponse("Admin user unblock failed"));
     }
 }
 

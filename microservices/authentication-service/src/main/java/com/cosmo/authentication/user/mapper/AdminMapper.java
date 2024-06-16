@@ -1,7 +1,5 @@
 package com.cosmo.authentication.user.mapper;
 
-import com.cosmo.authentication.accessgroup.entity.AccessGroup;
-import com.cosmo.authentication.accessgroup.model.SearchAccessGroupResponse;
 import com.cosmo.authentication.accessgroup.repo.AccessGroupRepository;
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.model.AdminUserDetailDto;
@@ -17,7 +15,6 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,5 +61,6 @@ public abstract class AdminMapper {
    public List<SearchAdminUserResponse> getAdminUserResponses(List<Admin> admins){
        return admins.stream().map(this::entityToResponse).collect(Collectors.toList());
    }
-    public abstract AdminUserDetailDto getAdminUserDetailDto(Admin admin);
+    public abstract AdminUserDetailDto getAdminUserDetails(Admin admin);
+
 }
