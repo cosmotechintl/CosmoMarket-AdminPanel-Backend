@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 public class UpdateAccessGroupRequest
 {
-    private Long id;
     @NotBlank(message = "name cannot be blank")
     private String name;
     @NotBlank(message = "description cannot be blank")
