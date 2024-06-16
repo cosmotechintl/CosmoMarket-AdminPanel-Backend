@@ -7,5 +7,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteAdminRequest extends ModelBase {
-    private Long id;
+    private String email;
 }
