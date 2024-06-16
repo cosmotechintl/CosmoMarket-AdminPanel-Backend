@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FetchAdminDetail {
-    @NotBlank(message = "username is required.")
-    private String username;
+    @NotBlank(message = "email is required.")
+    private String email;
 }
