@@ -69,7 +69,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Mono<ApiResponse<?>> getAdminUserDetails(FetchAdminDetail fetchAdminDetail) {
-        Optional<Admin> admin = adminRepository.findByEmail(fetchAdminDetail.getEmail());
+        Optional<Admin> admin = adminRepository.findByUsername(fetchAdminDetail.getUsername());
         if (admin.isEmpty()){
             return Mono.just(ResponseUtil.getNotFoundResponse("Admin not found"));
         }
@@ -82,7 +82,7 @@ public class AdminServiceImpl implements AdminService {
     public Mono<ApiResponse<?>> updateAdminUser(UpdateAdminRequest updateAdminRequest, Principal connectedUser) {
         var adminUser= ((Admin)((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal());
         Optional<Admin> existedNumber= adminRepository.findByMobileNumber(updateAdminRequest.getMobileNumber());
-        if (existedNumber.isPresent() && !existedNumber.get().getEmail().equals(updateAdminRequest.getEmail())){
+        if (existedNumber.isPresent() && !existedNumber.get().getUsername().equals(updateAdminRequest.getEmail())){
             return Mono.just(ResponseUtil.getFailureResponse("The mobile number is linked to another account."));
         }
         Optional<Admin> admin= adminRepository.findByEmail(updateAdminRequest.getEmail());
@@ -99,7 +99,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Mono<ApiResponse<?>> deleteAdminUser(DeleteAdminRequest deleteAdminRequest) {
-        Optional<Admin> admin= adminRepository.findByEmail(deleteAdminRequest.getEmail());
+        Optional<Admin> admin= adminRepository.findByUsername(deleteAdminRequest.getEmail());
         if (admin.isEmpty()){
             return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
         }
@@ -115,7 +115,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Mono<ApiResponse<?>> blockAdminUser(BlockAdminRequest blockAdminRequest) {
-        Optional<Admin> admin= adminRepository.findByEmail(blockAdminRequest.getEmail());
+        Optional<Admin> admin= adminRepository.findByUsername(blockAdminRequest.getEmail());
         if (admin.isEmpty() ){
             return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
         }
@@ -133,7 +133,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Mono<ApiResponse<?>> unblockAdminUser(UnblockAdminUserRequest unblockAdminRequest) {
-        Optional<Admin> admin=  adminRepository.findByEmail(unblockAdminRequest.getEmail());
+        Optional<Admin> admin=  adminRepository.findByUsername(unblockAdminRequest.getEmail());
         Admin admin1 = admin.get();
         if("BLOCKED".equals(admin1.getStatus().getName())){
             admin1.setStatus(statusRepository.findByName("PENDING"));
