@@ -93,7 +93,7 @@ public class AdminServiceImpl implements AdminService {
         else {
             Admin updatedAdmin = adminMapper.updateAdminUser(updateAdminRequest, adminUser);
             adminRepository.save(updatedAdmin);
-            return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user updated successfully."));
+            return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user updated successfully"));
         }
     }
 
