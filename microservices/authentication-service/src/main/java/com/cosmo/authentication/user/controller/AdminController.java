@@ -4,6 +4,7 @@ import com.cosmo.authentication.user.model.CreateAdminModel;
 import com.cosmo.authentication.user.model.FetchAdminDetail;
 import com.cosmo.authentication.user.model.request.BlockAdminRequest;
 import com.cosmo.authentication.user.model.request.DeleteAdminRequest;
+import com.cosmo.authentication.user.model.request.UnblockAdminUserRequest;
 import com.cosmo.authentication.user.model.request.UpdateAdminRequest;
 import com.cosmo.authentication.user.service.AdminService;
 import com.cosmo.common.constant.ApiConstant;
@@ -13,6 +14,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000/")
@@ -25,17 +28,17 @@ public class AdminController {
    public Mono<ApiResponse> createAdminUser(@RequestBody @Valid CreateAdminModel createAdminModel){
         return adminService.createAdminUser(createAdminModel);
     }
-    @GetMapping()
+    @PostMapping()
     public Mono<ApiResponse<?>> getAllAdminUsers(@RequestBody @Valid SearchParam searchParam){
         return adminService.getAllAdminUsers(searchParam);
     }
-    @GetMapping(ApiConstant.GET)
+    @PostMapping(ApiConstant.GET)
     public Mono<ApiResponse<?>> getAdminUserDetails(@RequestBody @Valid FetchAdminDetail fetchAdminDetail){
         return adminService.getAdminUserDetails(fetchAdminDetail);
     }
-    @PostMapping(ApiConstant.EDIT)
-    public Mono<ApiResponse<?>> editAdmin(@RequestBody @Valid UpdateAdminRequest request){
-        return adminService.updateAdminUser(request);
+    @PostMapping(ApiConstant.UPDATE)
+    public Mono<ApiResponse<?>> updateAdmin(@RequestBody @Valid UpdateAdminRequest request, Principal connectedUser){
+        return adminService.updateAdminUser(request,connectedUser);
     }
     @PostMapping(ApiConstant.DELETE)
     public Mono<ApiResponse<?>> deleteAdminUser(@RequestBody DeleteAdminRequest request){
@@ -44,5 +47,9 @@ public class AdminController {
     @PostMapping(ApiConstant.BLOCK)
     public Mono<ApiResponse<?>> blockAdminUser(@RequestBody BlockAdminRequest request){
         return adminService.blockAdminUser(request);
+    }
+    @PostMapping(ApiConstant.UNBLOCK)
+    public Mono<ApiResponse<?>> unblockAdminUser(@RequestBody UnblockAdminUserRequest request){
+        return adminService.unblockAdminUser(request);
     }
 }

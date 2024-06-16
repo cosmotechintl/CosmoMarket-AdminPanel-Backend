@@ -53,9 +53,8 @@ public class AccessGroupServiceImpl implements AccessGroupService {
     @Override
     @Transactional
     public Mono<ApiResponse<?>> updateAccessGroup(UpdateAccessGroupRequest request) {
-        Optional<AccessGroup> existedAccessGroup = accessGroupRepository.findById(request.getId());
-        Optional<AccessGroup> existedName= accessGroupRepository.findByName(request.getName());
-        if (existedName.isPresent() && !existedName.get().getId().equals(request.getId())){
+        Optional<AccessGroup> existedAccessGroup = accessGroupRepository.findByName(request.getName());
+        if (existedAccessGroup.isPresent() && !existedAccessGroup.get().getName().equals(request.getName())){
             return Mono.just(ResponseUtil.getFailureResponse("Access group name already exists"));
         }
         if (existedAccessGroup.isPresent()){
@@ -70,7 +69,7 @@ public class AccessGroupServiceImpl implements AccessGroupService {
 
     @Override
     public Mono<ApiResponse<?>> deleteAccessGroup(DeleteAccessGroupRequest deleteAccessGroupRequest) {
-        Optional<AccessGroup> accessGroup= accessGroupRepository.findById(deleteAccessGroupRequest.getId());
+        Optional<AccessGroup> accessGroup= accessGroupRepository.findByName(deleteAccessGroupRequest.getName());
         if (accessGroup.isEmpty()){
             return Mono.just(ResponseUtil.getNotFoundResponse("Access group not found"));
         }
