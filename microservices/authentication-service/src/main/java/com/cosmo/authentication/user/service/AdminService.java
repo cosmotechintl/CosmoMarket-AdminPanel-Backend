@@ -19,7 +19,7 @@ public interface AdminService {
     Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel);
     Mono<ApiResponse<?>> getAllAdminUsers(SearchParam searchParam);
     Mono<ApiResponse<?>> getAdminUserDetails(FetchAdminDetail fetchAdminDetail);
-    Mono<ApiResponse<?>> updateAdminUser(UpdateAdminRequest updateAdminRequest, Principal connectedUser);
+    Mono<ApiResponse<?>> updateAdminUser(UpdateAdminRequest updateAdminRequest);
     Mono<ApiResponse<?>> deleteAdminUser(DeleteAdminRequest deleteAdminRequest);
     Mono<ApiResponse<?>> blockAdminUser(BlockAdminRequest blockAdminRequest);
     Mono<ApiResponse<?>> unblockAdminUser(UnblockAdminUserRequest unblockAdminRequest);

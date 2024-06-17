@@ -11,14 +11,14 @@ import lombok.Setter;
 @Setter
 public class UpdateAdminRequest extends ModelBase {
 
-        private String email;
-        @NotBlank(message = "Name cannot be blank")
-        private String name;
-        @NotBlank(message = "Mobile Number cannot be null")
-        private String mobileNumber;
-        @NotBlank(message = "Address cannot be null")
-        private String address;
-        @NotNull
-        private AccessGroupDto accessGroup;
+    private String email;
+    @NotBlank(message = "Name cannot be blank")
+    private String name;
+    @NotBlank(message = "Mobile Number cannot be null")
+    private String mobileNumber;
+    @NotBlank(message = "Address cannot be null")
+    private String address;
+    @NotNull
+    private AccessGroupDto accessGroup;
 
 }
