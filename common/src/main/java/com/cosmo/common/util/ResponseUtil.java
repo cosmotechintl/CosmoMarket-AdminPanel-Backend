@@ -23,7 +23,13 @@ public class ResponseUtil {
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
-
+    public static ApiResponse getValidationFailureResponse(String message) {
+        return ApiResponse.builder()
+                .code(ServerResponseCodeConstant.VALIDATION_EXCEPTION)
+                .message(message)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
     public static ApiResponse getValidationFailureResponse(String message, Object data) {
         return ApiResponse.builder()
                 .code(ServerResponseCodeConstant.VALIDATION_EXCEPTION)
@@ -100,6 +106,13 @@ public class ResponseUtil {
                 .code(ServerResponseCodeConstant.SUCCESS)
                 .message(message)
                 .httpStatus(HttpStatus.NOT_FOUND)
+                .build();
+    }
+    public static ApiResponse<Object> getBeanValidationFailureResponse(String message) {
+        return ApiResponse.builder()
+                .code(ServerResponseCodeConstant.VALIDATION_EXCEPTION)
+                .message(message)
+                .httpStatus(HttpStatus.OK)
                 .build();
     }
 }

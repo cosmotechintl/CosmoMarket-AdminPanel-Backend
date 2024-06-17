@@ -20,6 +20,7 @@ public class CreateAdminModel extends ModelBase {
 
         @NotBlank(message = "Name Cannot Be Blank")
         private String name;
+        @Size(min=10, max=10, message = "Invalid mobile number format")
         @NotBlank(message = "Mobile Number Cannot Be Blank")
         private String mobileNumber;
         @NotBlank(message = "Address Cannot Be Blank")
