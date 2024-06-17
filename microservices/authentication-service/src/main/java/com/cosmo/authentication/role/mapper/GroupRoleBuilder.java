@@ -3,7 +3,7 @@ package com.cosmo.authentication.role.mapper;
 import com.cosmo.authentication.role.entity.Roles;
 import com.cosmo.authentication.role.model.RolesResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  */
 
 @Slf4j
-@Component
+@RequestScope
 public class GroupRoleBuilder {
 
     Map<String, List<RolesResponse>> rolesMap;
