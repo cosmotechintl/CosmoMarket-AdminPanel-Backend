@@ -37,8 +37,8 @@ public class AdminController {
         return adminService.getAdminUserDetails(fetchAdminDetail);
     }
     @PostMapping(ApiConstant.UPDATE)
-    public Mono<ApiResponse<?>> updateAdmin(@RequestBody @Valid UpdateAdminRequest request, Principal connectedUser){
-        return adminService.updateAdminUser(request,connectedUser);
+    public Mono<ApiResponse<?>> updateAdmin(@RequestBody @Valid UpdateAdminRequest request){
+        return adminService.updateAdminUser(request);
     }
     @PostMapping(ApiConstant.DELETE)
     public Mono<ApiResponse<?>> deleteAdminUser(@RequestBody DeleteAdminRequest request){

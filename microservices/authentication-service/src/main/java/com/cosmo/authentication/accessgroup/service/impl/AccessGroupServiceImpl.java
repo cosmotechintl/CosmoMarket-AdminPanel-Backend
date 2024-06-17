@@ -41,8 +41,8 @@ public class AccessGroupServiceImpl implements AccessGroupService {
     @Override
     @Transactional
     public Mono<ApiResponse> createAccessGroup(CreateAccessGroupModel createAccessGroupModel) {
-        Optional<AccessGroup> existedAccessGroup= accessGroupRepository.findByName(createAccessGroupModel.getName());
-        if(existedAccessGroup.isPresent()){
+        Optional<AccessGroup> existedAccessGroup = accessGroupRepository.findByName(createAccessGroupModel.getName());
+        if (existedAccessGroup.isPresent()) {
             return Mono.just(ResponseUtil.getFailureResponse("This name is already taken. Please use different name."));
         }
         AccessGroup accessGroup = accessGroupMapper.toEntity(createAccessGroupModel);
@@ -54,28 +54,27 @@ public class AccessGroupServiceImpl implements AccessGroupService {
     @Transactional
     public Mono<ApiResponse<?>> updateAccessGroup(UpdateAccessGroupRequest request) {
         Optional<AccessGroup> existedAccessGroup = accessGroupRepository.findByName(request.getName());
-        if (existedAccessGroup.isPresent() && !existedAccessGroup.get().getName().equals(request.getName())){
+        if (existedAccessGroup.isPresent() && !existedAccessGroup.get().getName().equals(request.getName())) {
             return Mono.just(ResponseUtil.getFailureResponse("Access group name already exists"));
         }
-        if (existedAccessGroup.isPresent()){
-            AccessGroup updatedAccessGroup= accessGroupMapper.updateAccessGroup(request,existedAccessGroup.get());
+        if (existedAccessGroup.isPresent()) {
+            AccessGroup updatedAccessGroup = accessGroupMapper.updateAccessGroup(request, existedAccessGroup.get());
             accessGroupRepository.save(updatedAccessGroup);
-            accessGroupRoleMapMapper.updateAccessGroupRoleMap(updatedAccessGroup,request.getRoles());
+            accessGroupRoleMapMapper.updateAccessGroupRoleMap(updatedAccessGroup, request.getRoles());
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Access group updated successfully"));
-            }
-        else {
+        } else {
             return Mono.just(ResponseUtil.getNotFoundResponse("Access group not found"));
-    }}
+        }
+    }
 
     @Override
     public Mono<ApiResponse<?>> deleteAccessGroup(DeleteAccessGroupRequest deleteAccessGroupRequest) {
-        Optional<AccessGroup> accessGroup= accessGroupRepository.findByName(deleteAccessGroupRequest.getName());
-        if (accessGroup.isEmpty()){
+        Optional<AccessGroup> accessGroup = accessGroupRepository.findByName(deleteAccessGroupRequest.getName());
+        if (accessGroup.isEmpty()) {
             return Mono.just(ResponseUtil.getNotFoundResponse("Access group not found"));
-        }
-        else{
-            AccessGroup accessGroup1= accessGroup.get();
-            if ("DELETED".equals(accessGroup1.getStatus().getName())){
+        } else {
+            AccessGroup accessGroup1 = accessGroup.get();
+            if ("DELETED".equals(accessGroup1.getStatus().getName())) {
                 return Mono.just(ResponseUtil.getNotFoundResponse("Access group not found"));
             }
             accessGroup1.setStatus(statusRepository.findByName("DELETED"));
@@ -83,6 +82,7 @@ public class AccessGroupServiceImpl implements AccessGroupService {
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Access group deleted successfully"));
         }
     }
+
     @Override
     public Mono<ApiResponse<?>> getAllAccessGroup(SearchParam searchParam) {
         SearchResponseWithMapperBuilder<AccessGroup, SearchAccessGroupResponse> responseBuilder = SearchResponseWithMapperBuilder
