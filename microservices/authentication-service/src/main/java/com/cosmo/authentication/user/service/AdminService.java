@@ -1,6 +1,7 @@
 package com.cosmo.authentication.user.service;
 
 
+import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
 import com.cosmo.authentication.user.model.CreateAdminModel;
 import com.cosmo.authentication.user.model.FetchAdminDetail;
 import com.cosmo.authentication.user.model.request.BlockAdminRequest;
@@ -16,7 +17,7 @@ import java.security.Principal;
 
 public interface AdminService {
 
-    Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel);
+    Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog);
     Mono<ApiResponse<?>> getAllAdminUsers(SearchParam searchParam);
     Mono<ApiResponse<?>> getAdminUserDetails(FetchAdminDetail fetchAdminDetail);
     Mono<ApiResponse<?>> updateAdminUser(UpdateAdminRequest updateAdminRequest);

@@ -1,5 +1,11 @@
 package com.cosmo.authentication.user.service.impl;
 
+import com.cosmo.authentication.emailtemplate.entity.AdminEmailLog;
+import com.cosmo.authentication.emailtemplate.entity.EmailTemplate;
+import com.cosmo.authentication.emailtemplate.mapper.AdminEmailLogMapper;
+import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
+import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
+import com.cosmo.authentication.emailtemplate.repo.EmailTemplateRepository;
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.mapper.AdminMapper;
 import com.cosmo.authentication.user.model.AdminUserDetailDto;
@@ -20,14 +26,19 @@ import com.cosmo.common.model.SearchResponseWithMapperBuilder;
 import com.cosmo.common.repository.StatusRepository;
 import com.cosmo.common.service.SearchResponse;
 import com.cosmo.common.util.ResponseUtil;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import reactor.core.publisher.Mono;
 
 import java.security.Principal;
-import java.util.Optional;
+import java.time.Year;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,21 +48,66 @@ public class AdminServiceImpl implements AdminService {
     private final SearchResponse searchResponse;
     private final AdminUserSearchRepository adminUserSearchRepository;
     private final StatusRepository statusRepository;
-
+    private final AdminEmailLogMapper adminEmailLogMapper;
+    private final AdminEmailLogRepository adminEmailLogRepository;
+    private final EmailTemplateRepository emailTemplateRepository;
+    @Autowired
+    private freemarker.template.Configuration freeMarkerConfig;
     @Override
     @Transactional
-    public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel) {
+    public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog) {
         Optional<Admin> existedAdminUser = adminRepository.findByUsername(createAdminModel.getEmail());
         Optional<Admin> existedNumber = adminRepository.findByMobileNumber(createAdminModel.getMobileNumber());
+
         if (existedAdminUser.isPresent()) {
             return Mono.just(ResponseUtil.getFailureResponse("This email is already linked to another account. Please use a different email"));
         }
+
         if (existedNumber.isPresent()) {
             return Mono.just(ResponseUtil.getFailureResponse("The entered mobile number is already linked to another account. Please use a different number"));
         }
-        Admin admin = adminMapper.mapToEntity(createAdminModel);
-        adminRepository.save(admin);
-        return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin User Created Successfully"));
+
+        try {
+            // Create admin entity and save
+            Admin admin = adminMapper.mapToEntity(createAdminModel);
+            adminRepository.save(admin);
+
+            // Calculate expiration time 24 hours from now
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.HOUR_OF_DAY, 24);
+            Date expirationTime = calendar.getTime();
+
+            // Prepare email content from template
+            EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName("Admin User Verification");
+            Map<String, Object> model = new HashMap<>();
+            model.put("adminUserName", admin.getName());
+            model.put("verificationLink", "heubsdfuiwagui"); // Replace with actual verification link
+            model.put("expirationTime", expirationTime);
+            model.put("currentYear", Year.now().getValue());
+
+            String emailContent;
+            try {
+                Template template = new Template("emailTemplate", emailTemplate.getTemplate(), freeMarkerConfig);
+                emailContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+            } catch (Exception e) {
+                // Rollback transaction if there's an error processing the template
+                throw new RuntimeException("Error processing email template", e);
+            }
+
+            // Save admin email log
+            AdminEmailLog adminEmailLog = adminEmailLogMapper.mapToEntity(createAdminEmailLog);
+            adminEmailLog.setEmail(createAdminModel.getEmail());
+            adminEmailLog.setAdmin(admin);
+            adminEmailLog.setMessage(emailContent);
+            adminEmailLog.setSent(true);
+            adminEmailLog.setUuid(UUID.randomUUID().toString());
+            adminEmailLogRepository.save(adminEmailLog);
+
+            return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin User Created Successfully"));
+        } catch (Exception ex) {
+            // Rollback transaction if any exception occurs during user creation or email log saving
+            return Mono.just(ResponseUtil.getFailureResponse("Failed to create admin user: " + ex.getMessage()));
+        }
     }
 
     @Override

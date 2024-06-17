@@ -1,5 +1,6 @@
 package com.cosmo.authentication.user.controller;
 
+import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
 import com.cosmo.authentication.user.model.CreateAdminModel;
 import com.cosmo.authentication.user.model.FetchAdminDetail;
 import com.cosmo.authentication.user.model.request.BlockAdminRequest;
@@ -25,8 +26,8 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping(ApiConstant.CREATE)
-   public Mono<ApiResponse> createAdminUser(@RequestBody @Valid CreateAdminModel createAdminModel){
-        return adminService.createAdminUser(createAdminModel);
+   public Mono<ApiResponse> createAdminUser(@RequestBody @Valid CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog){
+        return adminService.createAdminUser(createAdminModel,createAdminEmailLog);
     }
     @PostMapping()
     public Mono<ApiResponse<?>> getAllAdminUsers(@RequestBody @Valid SearchParam searchParam){
