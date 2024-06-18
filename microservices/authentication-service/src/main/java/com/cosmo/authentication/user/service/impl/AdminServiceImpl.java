@@ -1,7 +1,6 @@
 package com.cosmo.authentication.user.service.impl;
 
 import com.cosmo.authentication.emailtemplate.entity.AdminEmailLog;
-import com.cosmo.authentication.emailtemplate.entity.EmailTemplate;
 import com.cosmo.authentication.emailtemplate.mapper.AdminEmailLogMapper;
 import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
 import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
@@ -26,19 +25,13 @@ import com.cosmo.common.model.SearchResponseWithMapperBuilder;
 import com.cosmo.common.repository.StatusRepository;
 import com.cosmo.common.service.SearchResponse;
 import com.cosmo.common.util.ResponseUtil;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import reactor.core.publisher.Mono;
 
-import java.security.Principal;
-import java.time.Year;
-import java.util.*;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +46,7 @@ public class AdminServiceImpl implements AdminService {
     private final EmailTemplateRepository emailTemplateRepository;
     @Autowired
     private freemarker.template.Configuration freeMarkerConfig;
+
     @Override
     @Transactional
     public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog) {
@@ -127,6 +121,7 @@ public class AdminServiceImpl implements AdminService {
                 return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
             }
             admin1.setStatus(statusRepository.findByName("DELETED"));
+            admin1.setActive(false);
             adminRepository.save(admin1);
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user deleted successfully"));
         }
@@ -143,6 +138,7 @@ public class AdminServiceImpl implements AdminService {
                 return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
             } else {
                 admin1.setStatus(statusRepository.findByName("BLOCKED"));
+                admin1.setActive(false);
                 adminRepository.save(admin1);
                 return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user blocked successfully"));
             }
@@ -155,6 +151,7 @@ public class AdminServiceImpl implements AdminService {
         Admin admin1 = admin.get();
         if ("BLOCKED".equals(admin1.getStatus().getName())) {
             admin1.setStatus(statusRepository.findByName("PENDING"));
+            admin1.setActive(true);
             adminRepository.save(admin1);
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user unblocked successfully"));
         }
