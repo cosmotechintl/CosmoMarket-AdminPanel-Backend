@@ -1,5 +1,6 @@
 package com.cosmo.authentication.user.service.impl;
 
+import com.cosmo.authentication.core.service.MailService;
 import com.cosmo.authentication.emailtemplate.entity.AdminEmailLog;
 import com.cosmo.authentication.emailtemplate.entity.EmailTemplate;
 import com.cosmo.authentication.emailtemplate.mapper.AdminEmailLogMapper;
@@ -33,11 +34,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import reactor.core.publisher.Mono;
 
 import java.security.Principal;
-import java.time.Year;
 import java.util.*;
 
 @Service
@@ -50,9 +49,7 @@ public class AdminServiceImpl implements AdminService {
     private final StatusRepository statusRepository;
     private final AdminEmailLogMapper adminEmailLogMapper;
     private final AdminEmailLogRepository adminEmailLogRepository;
-    private final EmailTemplateRepository emailTemplateRepository;
-    @Autowired
-    private freemarker.template.Configuration freeMarkerConfig;
+    private final MailService mailService;
     @Override
     @Transactional
     public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog) {
@@ -73,6 +70,10 @@ public class AdminServiceImpl implements AdminService {
 
             AdminEmailLog adminEmailLog = adminEmailLogMapper.mapToEntity(createAdminEmailLog, admin);
             adminEmailLogRepository.save(adminEmailLog);
+
+            String mailContent = adminEmailLog.getMessage();
+            String subject = "Admin User Verification Mail";
+            mailService.sendEmail(admin.getEmail(), subject, mailContent);
 
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin User Created Successfully"));
         } catch (Exception ex) {

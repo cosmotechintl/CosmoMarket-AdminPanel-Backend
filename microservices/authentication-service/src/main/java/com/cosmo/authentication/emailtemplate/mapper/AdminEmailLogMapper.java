@@ -7,14 +7,12 @@ import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
 import com.cosmo.authentication.emailtemplate.repo.EmailTemplateRepository;
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.repo.AdminRepository;
-import com.cosmo.common.util.ResponseUtil;
 import freemarker.template.Template;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import reactor.core.publisher.Mono;
 
 import java.time.Year;
 import java.util.*;
@@ -29,18 +27,20 @@ public abstract class AdminEmailLogMapper {
     private freemarker.template.Configuration freeMarkerConfig;
     @Autowired
     protected EmailTemplateRepository emailTemplateRepository;
-
     public AdminEmailLog mapToEntity(CreateAdminEmailLog createAdminEmailLog, Admin admin){
         // Calculate expiration time 24 hours from now
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR_OF_DAY, 24);
         Date expirationTime = calendar.getTime();
 
+        //Generate UUID
+        String uuid = UUID.randomUUID().toString();
+
         // Prepare email content from template
         EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName("Admin User Verification");
         Map<String, Object> model = new HashMap<>();
         model.put("adminUserName", admin.getName());
-        model.put("verificationLink", "heubsdfuiwagui"); // Replace with actual verification link
+        model.put("verificationLink", "cosmomarket.com/verify-account/"+uuid); // Replace with actual verification link
         model.put("expirationTime", expirationTime);
         model.put("currentYear", Year.now().getValue());
 
@@ -57,7 +57,7 @@ public abstract class AdminEmailLogMapper {
         adminEmailLog.setAdmin(admin);
         adminEmailLog.setMessage(emailContent);
         adminEmailLog.setSent(true);
-        adminEmailLog.setUuid(UUID.randomUUID().toString());
+        adminEmailLog.setUuid(uuid);
         adminEmailLog.setExpired(false);
         return adminEmailLog;
     }
