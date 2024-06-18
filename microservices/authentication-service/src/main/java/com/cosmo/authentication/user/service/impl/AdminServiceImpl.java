@@ -68,44 +68,14 @@ public class AdminServiceImpl implements AdminService {
         }
 
         try {
-            // Create admin entity and save
             Admin admin = adminMapper.mapToEntity(createAdminModel);
             adminRepository.save(admin);
 
-            // Calculate expiration time 24 hours from now
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.HOUR_OF_DAY, 24);
-            Date expirationTime = calendar.getTime();
-
-            // Prepare email content from template
-            EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName("Admin User Verification");
-            Map<String, Object> model = new HashMap<>();
-            model.put("adminUserName", admin.getName());
-            model.put("verificationLink", "heubsdfuiwagui"); // Replace with actual verification link
-            model.put("expirationTime", expirationTime);
-            model.put("currentYear", Year.now().getValue());
-
-            String emailContent;
-            try {
-                Template template = new Template("emailTemplate", emailTemplate.getTemplate(), freeMarkerConfig);
-                emailContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-            } catch (Exception e) {
-                // Rollback transaction if there's an error processing the template
-                throw new RuntimeException("Error processing email template", e);
-            }
-
-            // Save admin email log
-            AdminEmailLog adminEmailLog = adminEmailLogMapper.mapToEntity(createAdminEmailLog);
-            adminEmailLog.setEmail(createAdminModel.getEmail());
-            adminEmailLog.setAdmin(admin);
-            adminEmailLog.setMessage(emailContent);
-            adminEmailLog.setSent(true);
-            adminEmailLog.setUuid(UUID.randomUUID().toString());
+            AdminEmailLog adminEmailLog = adminEmailLogMapper.mapToEntity(createAdminEmailLog, admin);
             adminEmailLogRepository.save(adminEmailLog);
 
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin User Created Successfully"));
         } catch (Exception ex) {
-            // Rollback transaction if any exception occurs during user creation or email log saving
             return Mono.just(ResponseUtil.getFailureResponse("Failed to create admin user: " + ex.getMessage()));
         }
     }
