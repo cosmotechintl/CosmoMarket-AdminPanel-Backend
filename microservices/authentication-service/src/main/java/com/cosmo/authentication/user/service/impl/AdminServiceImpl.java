@@ -2,7 +2,6 @@ package com.cosmo.authentication.user.service.impl;
 
 import com.cosmo.authentication.core.service.MailService;
 import com.cosmo.authentication.emailtemplate.entity.AdminEmailLog;
-import com.cosmo.authentication.emailtemplate.entity.EmailTemplate;
 import com.cosmo.authentication.emailtemplate.mapper.AdminEmailLogMapper;
 import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
 import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
@@ -128,6 +127,7 @@ public class AdminServiceImpl implements AdminService {
                 return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
             }
             admin1.setStatus(statusRepository.findByName("DELETED"));
+            admin1.setActive(false);
             adminRepository.save(admin1);
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user deleted successfully"));
         }
@@ -144,6 +144,7 @@ public class AdminServiceImpl implements AdminService {
                 return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
             } else {
                 admin1.setStatus(statusRepository.findByName("BLOCKED"));
+                admin1.setActive(false);
                 adminRepository.save(admin1);
                 return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user blocked successfully"));
             }
@@ -156,6 +157,7 @@ public class AdminServiceImpl implements AdminService {
         Admin admin1 = admin.get();
         if ("BLOCKED".equals(admin1.getStatus().getName())) {
             admin1.setStatus(statusRepository.findByName("PENDING"));
+            admin1.setActive(true);
             adminRepository.save(admin1);
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user unblocked successfully"));
         }
