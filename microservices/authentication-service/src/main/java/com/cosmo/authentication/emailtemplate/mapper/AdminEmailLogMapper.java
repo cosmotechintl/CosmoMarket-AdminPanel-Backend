@@ -40,7 +40,7 @@ public abstract class AdminEmailLogMapper {
         EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName("Admin User Verification");
         Map<String, Object> model = new HashMap<>();
         model.put("adminUserName", admin.getName());
-        model.put("verificationLink", "cosmomarket.com/verify-account/"+uuid); // Replace with actual verification link
+        model.put("verificationLink", "http://localhost:3000/create-password/"+uuid); // Replace with actual verification link
         model.put("expirationTime", expirationTime);
         model.put("currentYear", Year.now().getValue());
 

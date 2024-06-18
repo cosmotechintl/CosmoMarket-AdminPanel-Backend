@@ -1,6 +1,7 @@
 package com.cosmo.authentication.user.mapper;
 
 import com.cosmo.authentication.accessgroup.repo.AccessGroupRepository;
+import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.model.AdminUserDetailDto;
 import com.cosmo.authentication.user.model.CreateAdminModel;
@@ -29,7 +30,8 @@ public abstract class AdminMapper {
     protected AdminRepository adminRepository;
     @Autowired
     protected PasswordEncoder passwordEncoder;
-
+    @Autowired
+    protected AdminEmailLogRepository adminEmailLogRepository;
    public Admin mapToEntity(CreateAdminModel createAdminModel){
        Admin admin= new Admin();
 

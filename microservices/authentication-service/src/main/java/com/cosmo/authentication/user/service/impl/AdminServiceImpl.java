@@ -12,10 +12,7 @@ import com.cosmo.authentication.user.model.AdminUserDetailDto;
 import com.cosmo.authentication.user.model.CreateAdminModel;
 import com.cosmo.authentication.user.model.FetchAdminDetail;
 import com.cosmo.authentication.user.model.SearchAdminUserResponse;
-import com.cosmo.authentication.user.model.request.BlockAdminRequest;
-import com.cosmo.authentication.user.model.request.DeleteAdminRequest;
-import com.cosmo.authentication.user.model.request.UnblockAdminUserRequest;
-import com.cosmo.authentication.user.model.request.UpdateAdminRequest;
+import com.cosmo.authentication.user.model.request.*;
 import com.cosmo.authentication.user.repo.AdminRepository;
 import com.cosmo.authentication.user.repo.AdminUserSearchRepository;
 import com.cosmo.authentication.user.service.AdminService;
@@ -32,6 +29,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -49,6 +47,8 @@ public class AdminServiceImpl implements AdminService {
     private final AdminEmailLogMapper adminEmailLogMapper;
     private final AdminEmailLogRepository adminEmailLogRepository;
     private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     @Transactional
     public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog) {
@@ -163,5 +163,33 @@ public class AdminServiceImpl implements AdminService {
         }
         return Mono.just(ResponseUtil.getFailureResponse("Admin user unblock failed"));
     }
+
+    @Override
+    public Mono<ApiResponse<?>> createAdminPassword(CreatePasswordRequest createPasswordRequest) {
+        Optional<AdminEmailLog> adminEmailLog = adminEmailLogRepository.findByUuid(createPasswordRequest.getUuid());
+        if (adminEmailLog.isEmpty()) {
+            return Mono.just(ResponseUtil.getFailureResponse("Invalid UUID"));
+        } else {
+            AdminEmailLog adminEmailLog1 = adminEmailLog.get();
+            if (adminEmailLog1.isExpired()) {
+                return Mono.just(ResponseUtil.getFailureResponse("Link expired"));
+            } else {
+                Optional<Admin> admin = adminRepository.findByEmail(adminEmailLog1.getAdmin().getEmail());
+                Admin admin1 = admin.get();
+                if(!createPasswordRequest.getPassword().equals(createPasswordRequest.getConfirmPassword())){
+                    return Mono.just(ResponseUtil.getFailureResponse("Passwords do not match"));
+                }
+                else{
+                    admin1.setPassword(passwordEncoder.encode(createPasswordRequest.getPassword()));
+                    admin1.setStatus(statusRepository.findByName("ACTIVE"));
+                    admin1.setPasswordChangeDate(new Date());
+                    admin1.setActive(true);
+                    adminRepository.save(admin1);
+                    return Mono.just(ResponseUtil.getSuccessfulApiResponse("Password created successfully"));
+                }   
+            }
+        }
+    }
+
 }
 

@@ -3,10 +3,7 @@ package com.cosmo.authentication.user.controller;
 import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
 import com.cosmo.authentication.user.model.CreateAdminModel;
 import com.cosmo.authentication.user.model.FetchAdminDetail;
-import com.cosmo.authentication.user.model.request.BlockAdminRequest;
-import com.cosmo.authentication.user.model.request.DeleteAdminRequest;
-import com.cosmo.authentication.user.model.request.UnblockAdminUserRequest;
-import com.cosmo.authentication.user.model.request.UpdateAdminRequest;
+import com.cosmo.authentication.user.model.request.*;
 import com.cosmo.authentication.user.service.AdminService;
 import com.cosmo.common.constant.ApiConstant;
 import com.cosmo.common.model.ApiResponse;
@@ -52,5 +49,9 @@ public class AdminController {
     @PostMapping(ApiConstant.UNBLOCK)
     public Mono<ApiResponse<?>> unblockAdminUser(@RequestBody UnblockAdminUserRequest request){
         return adminService.unblockAdminUser(request);
+    }
+    @PostMapping(ApiConstant.CREATE_PASSWORD)
+    public Mono<ApiResponse<?>> createPassword(@RequestBody @Valid CreatePasswordRequest createPasswordRequest){
+        return adminService.createAdminPassword(createPasswordRequest);
     }
 }
