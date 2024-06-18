@@ -5,8 +5,8 @@ import com.cosmo.common.model.StatusDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface StatusMapper {
+public abstract class StatusMapper {
 
-    StatusDto entityToStatusDto(Status status);
+   public abstract StatusDto entityToStatusDto(Status status);
 
 }
