@@ -1,5 +1,7 @@
 package com.cosmo.authentication.emailtemplate.mapper;
 
+import com.cosmo.authentication.core.constant.EmailTemplateConstant;
+import com.cosmo.authentication.core.constant.FreeMarkerTemplateConstant;
 import com.cosmo.authentication.emailtemplate.entity.AdminEmailLog;
 import com.cosmo.authentication.emailtemplate.entity.EmailTemplate;
 import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
@@ -37,12 +39,12 @@ public abstract class AdminEmailLogMapper {
         String uuid = UUID.randomUUID().toString();
 
         // Prepare email content from template
-        EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName("Admin User Verification");
+        EmailTemplate emailTemplate = emailTemplateRepository.findEmailTemplateByName(EmailTemplateConstant.ADMIN_MAIL_VERIFICATION);
         Map<String, Object> model = new HashMap<>();
-        model.put("adminUserName", admin.getName());
-        model.put("verificationLink", "http://localhost:3000/create-password/"+uuid); // Replace with actual verification link
-        model.put("expirationTime", expirationTime);
-        model.put("currentYear", Year.now().getValue());
+        model.put(FreeMarkerTemplateConstant.USERNAME, admin.getName());
+        model.put(FreeMarkerTemplateConstant.VERIFICATION_LINK, "http://localhost:3000/create-password/"+uuid); // Replace with actual verification link
+        model.put(FreeMarkerTemplateConstant.EXPIRATION_TIME, expirationTime);
+        model.put(FreeMarkerTemplateConstant.CURRENT_YEAR, Year.now().getValue());
 
         String emailContent;
         try {
@@ -56,7 +58,7 @@ public abstract class AdminEmailLogMapper {
         adminEmailLog.setEmail(admin.getEmail());
         adminEmailLog.setAdmin(admin);
         adminEmailLog.setMessage(emailContent);
-        adminEmailLog.setSent(true);
+        adminEmailLog.setSent(true); //don't make it true here
         adminEmailLog.setUuid(uuid);
         adminEmailLog.setExpired(false);
         return adminEmailLog;

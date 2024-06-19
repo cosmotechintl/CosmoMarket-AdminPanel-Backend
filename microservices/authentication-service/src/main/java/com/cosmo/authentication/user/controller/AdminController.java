@@ -50,8 +50,8 @@ public class AdminController {
     public Mono<ApiResponse<?>> unblockAdminUser(@RequestBody UnblockAdminUserRequest request){
         return adminService.unblockAdminUser(request);
     }
-    @PostMapping(ApiConstant.CREATE_PASSWORD)
-    public Mono<ApiResponse<?>> createPassword(@RequestBody @Valid CreatePasswordRequest createPasswordRequest){
+    @PostMapping(ApiConstant.SET_PASSWORD)
+    public Mono<ApiResponse<?>> setPassword(@RequestBody @Valid CreatePasswordRequest createPasswordRequest){
         return adminService.createAdminPassword(createPasswordRequest);
     }
 }

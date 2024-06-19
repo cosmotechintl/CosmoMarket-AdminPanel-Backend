@@ -1,9 +1,11 @@
 package com.cosmo.authentication.user.service.impl;
 
+import com.cosmo.authentication.core.constant.EmailSubjectConstant;
 import com.cosmo.authentication.core.service.MailService;
 import com.cosmo.authentication.emailtemplate.entity.AdminEmailLog;
 import com.cosmo.authentication.emailtemplate.mapper.AdminEmailLogMapper;
 import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
+import com.cosmo.authentication.emailtemplate.model.request.SendEmailRequest;
 import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
 import com.cosmo.authentication.emailtemplate.repo.EmailTemplateRepository;
 import com.cosmo.authentication.user.entity.Admin;
@@ -70,9 +72,11 @@ public class AdminServiceImpl implements AdminService {
             AdminEmailLog adminEmailLog = adminEmailLogMapper.mapToEntity(createAdminEmailLog, admin);
             adminEmailLogRepository.save(adminEmailLog);
 
-            String mailContent = adminEmailLog.getMessage();
-            String subject = "Admin User Verification Mail";
-            mailService.sendEmail(admin.getEmail(), subject, mailContent);
+            SendEmailRequest sendEmailRequest = new SendEmailRequest();
+            sendEmailRequest.setRecipient(admin.getEmail());
+            sendEmailRequest.setSubject(EmailSubjectConstant.EMAIL_VERIFICATION);
+            sendEmailRequest.setMessage(adminEmailLog.getMessage());
+            mailService.sendEmail(sendEmailRequest);
 
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin User Created Successfully"));
         } catch (Exception ex) {
@@ -170,26 +174,21 @@ public class AdminServiceImpl implements AdminService {
         if (adminEmailLog.isEmpty()) {
             return Mono.just(ResponseUtil.getFailureResponse("Invalid UUID"));
         } else {
-            AdminEmailLog adminEmailLog1 = adminEmailLog.get();
-            if (adminEmailLog1.isExpired()) {
+            AdminEmailLog existingAdminEmailLog = adminEmailLog.get();
+            if (existingAdminEmailLog.isExpired()) {
                 return Mono.just(ResponseUtil.getFailureResponse("Link expired"));
             } else {
-                Optional<Admin> admin = adminRepository.findByEmail(adminEmailLog1.getAdmin().getEmail());
-                Admin admin1 = admin.get();
-                if(!createPasswordRequest.getPassword().equals(createPasswordRequest.getConfirmPassword())){
-                    return Mono.just(ResponseUtil.getFailureResponse("Passwords do not match"));
-                }
-                else{
-                    admin1.setPassword(passwordEncoder.encode(createPasswordRequest.getPassword()));
-                    admin1.setStatus(statusRepository.findByName("ACTIVE"));
-                    admin1.setPasswordChangeDate(new Date());
-                    admin1.setActive(true);
-                    adminRepository.save(admin1);
-                    return Mono.just(ResponseUtil.getSuccessfulApiResponse("Password created successfully"));
-                }   
+                Optional<Admin> admin = adminRepository.findByEmail(existingAdminEmailLog.getAdmin().getEmail());
+                Admin existingAdmin = admin.get();
+                existingAdmin.setPassword(passwordEncoder.encode(createPasswordRequest.getPassword()));
+                existingAdmin.setStatus(statusRepository.findByName("ACTIVE"));
+                existingAdmin.setPasswordChangeDate(new Date());
+                existingAdmin.setActive(true);
+                adminRepository.save(existingAdmin);
+                return Mono.just(ResponseUtil.getSuccessfulApiResponse("Password created successfully"));
+
             }
         }
     }
-
 }
 
