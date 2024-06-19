@@ -23,11 +23,11 @@ public class AdminUserSearchRepositoryImpl implements AdminUserSearchRepository 
 
     @Override
     public Long count(SearchParam searchParam) {
-        return (Long) em.createQuery("select COUNT(ag.id) " +
-                        "from Admin  ag " +
-                        "join Status s on s.id=ag.status.id " +
+        return (Long) em.createQuery("select COUNT(a.id) " +
+                        "from Admin  a " +
+                        "join Status s on s.id=a.status.id " +
                         " where " +
-                        "(:name is null or ag.name like CONCAT('%', :name, '%')) and " +
+                        "(:name is null or a.name like CONCAT('%', :name, '%')) and " +
                         "(:status is null or s.description=:status) ")
                 .setParameter("name", SearchParamUtil.getString(searchParam, NAME))
                 .setParameter("status", SearchParamUtil.getString(searchParam, STATUS))
@@ -36,11 +36,11 @@ public class AdminUserSearchRepositoryImpl implements AdminUserSearchRepository 
 
     @Override
     public List<Admin> getAll(SearchParam searchParam) {
-        return em.createQuery("select ag " +
-                        "from Admin  ag " +
-                        "join Status s on s.id=ag.status.id " +
+        return em.createQuery("select a " +
+                        "from Admin  a " +
+                        "join Status s on s.id=a.status.id " +
                         " where " +
-                        "(:name is null or ag.name like CONCAT('%', :name, '%')) and " +
+                        "(:name is null or a.name like CONCAT('%', :name, '%')) and " +
                         "(:status is null or s.description=:status) ")
                 .setParameter("name", SearchParamUtil.getString(searchParam, NAME))
                 .setParameter("status", SearchParamUtil.getString(searchParam, STATUS))

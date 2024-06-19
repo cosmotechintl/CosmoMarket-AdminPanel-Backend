@@ -39,15 +39,15 @@ public class AdminController {
         return adminService.updateAdminUser(request);
     }
     @PostMapping(ApiConstant.DELETE)
-    public Mono<ApiResponse<?>> deleteAdminUser(@RequestBody DeleteAdminRequest request){
+    public Mono<ApiResponse<?>> deleteAdminUser(@RequestBody @Valid DeleteAdminRequest request){
         return adminService.deleteAdminUser(request);
     }
     @PostMapping(ApiConstant.BLOCK)
-    public Mono<ApiResponse<?>> blockAdminUser(@RequestBody BlockAdminRequest request){
+    public Mono<ApiResponse<?>> blockAdminUser(@RequestBody@Valid BlockAdminRequest request){
         return adminService.blockAdminUser(request);
     }
     @PostMapping(ApiConstant.UNBLOCK)
-    public Mono<ApiResponse<?>> unblockAdminUser(@RequestBody UnblockAdminUserRequest request){
+    public Mono<ApiResponse<?>> unblockAdminUser(@RequestBody @Valid UnblockAdminUserRequest request){
         return adminService.unblockAdminUser(request);
     }
     @PostMapping(ApiConstant.SET_PASSWORD)
