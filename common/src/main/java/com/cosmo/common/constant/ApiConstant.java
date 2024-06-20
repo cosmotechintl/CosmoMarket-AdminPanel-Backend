@@ -6,6 +6,7 @@ public class ApiConstant {
     public static final String SEARCH = "search";
     public static final String CREATE = "create";
     public static final String PRODUCT = "product";
+    public static final String CUSTOMER = "customer";
     public static final String PRODUCT_DETAIL = "productDetail";
     public static final String GROUP = "group";
     public static final String ADMIN = "admin";
