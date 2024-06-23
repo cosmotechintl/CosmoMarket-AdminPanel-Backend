@@ -1,6 +1,5 @@
 package com.cosmo.authentication.user.controller;
 
-import com.cosmo.authentication.reports.customerReport.entity.CustomerService;
 import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
 import com.cosmo.authentication.user.model.CreateAdminModel;
 import com.cosmo.authentication.user.model.FetchAdminDetail;
@@ -20,7 +19,6 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
-    private final CustomerService customerService;
 
     @PostMapping(ApiConstant.CREATE)
    public Mono<ApiResponse> createAdminUser(@RequestBody @Valid CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog){
