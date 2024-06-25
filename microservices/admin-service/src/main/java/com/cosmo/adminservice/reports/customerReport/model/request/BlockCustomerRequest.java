@@ -1,4 +1,4 @@
-package com.cosmo.authentication.reports.customerReport.model.request;
+package com.cosmo.adminservice.reports.customerReport.model.request;
 
 import com.cosmo.common.model.ModelBase;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.cosmo.authentication.reports.customerReport.service.impl;
+package com.cosmo.adminservice.reports.customerReport.service.impl;
 
 
 import lombok.RequiredArgsConstructor;

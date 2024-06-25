@@ -1,4 +1,4 @@
-package com.cosmo.authentication.core.config;
+package com.cosmo.adminservice.config;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;

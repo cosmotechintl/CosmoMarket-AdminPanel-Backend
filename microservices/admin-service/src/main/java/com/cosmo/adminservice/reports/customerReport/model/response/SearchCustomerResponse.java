@@ -1,4 +1,4 @@
-package com.cosmo.authentication.reports.customerReport.model.response;
+package com.cosmo.adminservice.reports.customerReport.model.response;
 
 import com.cosmo.common.model.ModelBase;
 import com.cosmo.common.model.StatusDto;

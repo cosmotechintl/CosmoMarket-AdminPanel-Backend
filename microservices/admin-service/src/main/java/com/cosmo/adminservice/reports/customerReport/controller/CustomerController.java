@@ -1,7 +1,7 @@
-package com.cosmo.authentication.reports.customerReport.controller;
+package com.cosmo.adminservice.reports.customerReport.controller;
 
-import com.cosmo.authentication.reports.customerReport.model.response.SearchCustomerResponse;
-import com.cosmo.authentication.reports.customerReport.service.CustomerService;
+import com.cosmo.adminservice.reports.customerReport.service.CustomerService;
+import com.cosmo.adminservice.reports.customerReport.model.response.SearchCustomerResponse;
 import com.cosmo.common.constant.ApiConstant;
 import com.cosmo.common.model.ApiResponse;
 import com.cosmo.common.model.SearchParam;

@@ -1,6 +1,6 @@
-package com.cosmo.authentication.reports.customerReport.service;
+package com.cosmo.adminservice.reports.customerReport.service;
 
-import com.cosmo.authentication.reports.customerReport.model.response.SearchCustomerResponse;
+import com.cosmo.adminservice.reports.customerReport.model.response.SearchCustomerResponse;
 import com.cosmo.common.model.ApiResponse;
 import com.cosmo.common.model.SearchParam;
 import reactor.core.publisher.Mono;

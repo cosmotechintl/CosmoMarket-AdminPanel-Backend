@@ -1,4 +1,4 @@
-package com.cosmo.authentication.core.config;
+package com.cosmo.adminservice.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

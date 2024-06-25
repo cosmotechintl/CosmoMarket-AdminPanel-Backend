@@ -1,13 +1,13 @@
-package com.cosmo.authentication.reports.customerReport.service.impl;
+package com.cosmo.adminservice.reports.customerReport.service.impl;
 
-import com.cosmo.authentication.reports.customerReport.model.response.SearchCustomerResponse;
-import com.cosmo.authentication.reports.customerReport.service.CustomerService;
+import com.cosmo.adminservice.reports.customerReport.service.CustomerService;
+import com.cosmo.adminservice.reports.customerReport.model.response.SearchCustomerResponse;
 import com.cosmo.common.constant.ApiConstant;
 import com.cosmo.common.constant.ServiceConstant;
 import com.cosmo.common.model.ApiResponse;
 import com.cosmo.common.model.SearchParam;
 import com.cosmo.common.service.AbstractConnectorService;
-import com.cosmo.authentication.core.config.PropertiesFileValue;
+import com.cosmo.adminservice.config.PropertiesFileValue;
 import com.cosmo.common.service.ConnectorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
