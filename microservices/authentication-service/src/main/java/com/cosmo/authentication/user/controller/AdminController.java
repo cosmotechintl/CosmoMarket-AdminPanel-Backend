@@ -1,6 +1,8 @@
 package com.cosmo.authentication.user.controller;
 
 import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
+import com.cosmo.authentication.log.model.AdminBlockLogModel;
+import com.cosmo.authentication.log.model.AdminDeleteLogModel;
 import com.cosmo.authentication.user.model.CreateAdminModel;
 import com.cosmo.authentication.user.model.FetchAdminDetail;
 import com.cosmo.authentication.user.model.request.*;
@@ -37,12 +39,12 @@ public class AdminController {
         return adminService.updateAdminUser(request);
     }
     @PostMapping(ApiConstant.DELETE)
-    public Mono<ApiResponse<?>> deleteAdminUser(@RequestBody @Valid DeleteAdminRequest request){
-        return adminService.deleteAdminUser(request);
+    public Mono<ApiResponse<?>> deleteAdminUser(@RequestBody @Valid DeleteAdminRequest request, AdminDeleteLogModel adminDeleteLogModel){
+        return adminService.deleteAdminUser(request, adminDeleteLogModel);
     }
     @PostMapping(ApiConstant.BLOCK)
-    public Mono<ApiResponse<?>> blockAdminUser(@RequestBody@Valid BlockAdminRequest request){
-        return adminService.blockAdminUser(request);
+    public Mono<ApiResponse<?>> blockAdminUser(@RequestBody@Valid BlockAdminRequest request, AdminBlockLogModel adminBlockLogModel){
+        return adminService.blockAdminUser(request, adminBlockLogModel);
     }
     @PostMapping(ApiConstant.UNBLOCK)
     public Mono<ApiResponse<?>> unblockAdminUser(@RequestBody @Valid UnblockAdminUserRequest request){

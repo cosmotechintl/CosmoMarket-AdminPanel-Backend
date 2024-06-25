@@ -10,4 +10,7 @@ import lombok.Setter;
 public class DeleteAdminRequest extends ModelBase {
     @NotBlank(message = "Email is required")
     private String email;
+
+    @NotBlank(message = "Remarks cannot be blank")
+    private String remarks;
 }

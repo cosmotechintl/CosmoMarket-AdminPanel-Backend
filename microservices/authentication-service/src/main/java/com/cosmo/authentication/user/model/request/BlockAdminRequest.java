@@ -10,4 +10,6 @@ import lombok.Setter;
 public class BlockAdminRequest extends ModelBase {
     @NotBlank(message = "Email is required")
     private String email;
+    @NotBlank(message = "Remarks is required")
+    private String remarks;
 }

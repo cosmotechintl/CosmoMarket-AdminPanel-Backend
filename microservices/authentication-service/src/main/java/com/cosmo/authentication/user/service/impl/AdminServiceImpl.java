@@ -8,6 +8,14 @@ import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
 import com.cosmo.authentication.emailtemplate.model.request.SendEmailRequest;
 import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
 import com.cosmo.authentication.emailtemplate.repo.EmailTemplateRepository;
+import com.cosmo.authentication.log.entity.AdminBlockLog;
+import com.cosmo.authentication.log.entity.AdminDeleteLog;
+import com.cosmo.authentication.log.mapper.BlockLogMapper;
+import com.cosmo.authentication.log.mapper.DeleteLogMapper;
+import com.cosmo.authentication.log.model.AdminBlockLogModel;
+import com.cosmo.authentication.log.model.AdminDeleteLogModel;
+import com.cosmo.authentication.log.repo.AdminBlockLogRepository;
+import com.cosmo.authentication.log.repo.AdminDeleteLogRepository;
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.mapper.AdminMapper;
 import com.cosmo.authentication.user.model.AdminUserDetailDto;
@@ -51,7 +59,10 @@ public class AdminServiceImpl implements AdminService {
     private final AdminEmailLogRepository adminEmailLogRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
-
+    private final AdminDeleteLogRepository adminDeleteLogRepository;
+    private final AdminBlockLogRepository adminBlockLogRepository;
+    private final DeleteLogMapper deleteLogMapper;
+    private final BlockLogMapper blockLogMapper;
     @Override
     @Transactional
     public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog) {
@@ -124,7 +135,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Mono<ApiResponse<?>> deleteAdminUser(DeleteAdminRequest deleteAdminRequest) {
+    public Mono<ApiResponse<?>> deleteAdminUser(DeleteAdminRequest deleteAdminRequest, AdminDeleteLogModel adminDeleteLogModel) {
         Optional<Admin> checkAdmin = adminRepository.findByEmail(deleteAdminRequest.getEmail());
         if (checkAdmin.isEmpty()) {
             return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
@@ -136,12 +147,19 @@ public class AdminServiceImpl implements AdminService {
             admin.setStatus(statusRepository.findByName(StatusConstant.DELETED.getName()));
             admin.setActive(false);
             adminRepository.save(admin);
+
+            adminDeleteLogModel.setRemarks(deleteAdminRequest.getRemarks());
+            adminDeleteLogModel.setAdmin(admin);
+
+            AdminDeleteLog adminDeleteLog = deleteLogMapper.mapToEntity(adminDeleteLogModel);
+            adminDeleteLogRepository.save(adminDeleteLog);
+
             return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user deleted successfully"));
         }
     }
 
     @Override
-    public Mono<ApiResponse<?>> blockAdminUser(BlockAdminRequest blockAdminRequest) {
+    public Mono<ApiResponse<?>> blockAdminUser(BlockAdminRequest blockAdminRequest, AdminBlockLogModel adminBlockLogModel) {
         Optional<Admin> checkAdmin = adminRepository.findByEmail(blockAdminRequest.getEmail());
         if (checkAdmin.isEmpty()) {
             return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
@@ -153,6 +171,13 @@ public class AdminServiceImpl implements AdminService {
                 admin.setStatus(statusRepository.findByName(StatusConstant.BLOCKED.getName()));
                 admin.setActive(false);
                 adminRepository.save(admin);
+
+                adminBlockLogModel.setRemarks(blockAdminRequest.getRemarks());
+                adminBlockLogModel.setAdmin(admin);
+
+                AdminBlockLog adminBlockLog = blockLogMapper.mapToEntity(adminBlockLogModel);
+                adminBlockLogRepository.save(adminBlockLog);
+
                 return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user blocked successfully"));
             }
         }
