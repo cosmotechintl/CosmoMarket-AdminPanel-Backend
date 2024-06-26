@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
 import java.util.Date;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public abstract class DeleteLogMapper extends ModelBase {
+public abstract class DeleteLogMapper{
     public AdminDeleteLog mapToEntity(AdminDeleteLogModel adminDeleteLogModel) {
         AdminDeleteLog adminDeleteLog = new AdminDeleteLog();
         adminDeleteLog.setRemarks(adminDeleteLogModel.getRemarks());
