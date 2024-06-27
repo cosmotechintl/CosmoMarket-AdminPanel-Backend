@@ -1,5 +1,9 @@
 package com.cosmo.authentication.reports.customerReport.controller;
 
+import com.cosmo.authentication.reports.customerReport.model.request.BlockCustomerRequest;
+import com.cosmo.authentication.reports.customerReport.model.request.DeleteCustomerRequest;
+import com.cosmo.authentication.reports.customerReport.model.request.FetchCustomerDetail;
+import com.cosmo.authentication.reports.customerReport.model.request.UnblockCustomerRequest;
 import com.cosmo.authentication.reports.customerReport.model.response.SearchCustomerResponse;
 import com.cosmo.authentication.reports.customerReport.service.CustomerService;
 import com.cosmo.common.constant.ApiConstant;
@@ -19,7 +23,19 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping(ApiConstant.GET)
-    public Mono<ApiResponse<SearchCustomerResponse>> getRegisteredCustomers(@RequestBody SearchParam searchParam) {
+    public Mono<ApiResponse<Object>> getRegisteredCustomers(@RequestBody SearchParam searchParam) {
         return customerService.getRegisteredCustomers(searchParam);
+    }
+    @PostMapping(ApiConstant.BLOCK)
+    public Mono<ApiResponse<Object>> blockRegisteredCustomers(@RequestBody BlockCustomerRequest blockCustomerRequest) {
+        return customerService.blockCustomer(blockCustomerRequest);
+    }
+    @PostMapping(ApiConstant.GET+ApiConstant.SLASH+ApiConstant.DETAIL)
+    public Mono<ApiResponse<Object>> getCustomerDetails(FetchCustomerDetail fetchCustomerDetail){
+        return customerService.getCustomerDetails(fetchCustomerDetail);
+    }
+    @PostMapping(ApiConstant.UNBLOCK)
+    public Mono<ApiResponse<Object>> unblockCustomer(UnblockCustomerRequest unblockCustomerRequest){
+        return customerService.unblockCustomer(unblockCustomerRequest);
     }
 }

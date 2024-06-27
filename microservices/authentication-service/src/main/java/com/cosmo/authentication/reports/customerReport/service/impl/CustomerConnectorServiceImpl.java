@@ -1,5 +1,8 @@
 package com.cosmo.authentication.reports.customerReport.service.impl;
 
+import com.cosmo.authentication.reports.customerReport.model.request.BlockCustomerRequest;
+import com.cosmo.authentication.reports.customerReport.model.request.FetchCustomerDetail;
+import com.cosmo.authentication.reports.customerReport.model.request.UnblockCustomerRequest;
 import com.cosmo.authentication.reports.customerReport.model.response.SearchCustomerResponse;
 import com.cosmo.authentication.reports.customerReport.service.CustomerService;
 import com.cosmo.common.constant.ApiConstant;
@@ -9,6 +12,7 @@ import com.cosmo.common.model.SearchParam;
 import com.cosmo.common.service.AbstractConnectorService;
 import com.cosmo.authentication.core.config.PropertiesFileValue;
 import com.cosmo.common.service.ConnectorService;
+import com.cosmo.common.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,9 +33,33 @@ public class CustomerConnectorServiceImpl extends AbstractConnectorService imple
     }
 
     @Override
-    public Mono<ApiResponse<SearchCustomerResponse>> getRegisteredCustomers(SearchParam searchParam) {
+    public Mono<ApiResponse<Object>> getRegisteredCustomers(SearchParam searchParam) {
         return connectToService(searchParam,
                 ApiConstant.CUSTOMER+ApiConstant.SLASH+ApiConstant.GET,
+                new ParameterizedTypeReference<>() {
+                });
+    }
+
+    @Override
+    public Mono<ApiResponse<Object>> blockCustomer(BlockCustomerRequest blockCustomerRequest) {
+        return connectToService(blockCustomerRequest,
+                ApiConstant.CUSTOMER+ApiConstant.SLASH+ApiConstant.BLOCK,
+                new ParameterizedTypeReference<>() {
+                });
+    }
+
+    @Override
+    public Mono<ApiResponse<Object>> getCustomerDetails(FetchCustomerDetail fetchCustomerDetail) {
+        return connectToService(fetchCustomerDetail,
+                ApiConstant.CUSTOMER+ApiConstant.SLASH+ApiConstant.GET+ApiConstant.SLASH+ApiConstant.DETAIL,
+                new ParameterizedTypeReference<>() {
+                });
+    }
+
+    @Override
+    public Mono<ApiResponse<Object>> unblockCustomer(UnblockCustomerRequest unblockCustomerRequest) {
+        return connectToService(unblockCustomerRequest,
+                ApiConstant.CUSTOMER+ApiConstant.SLASH+ApiConstant.UNBLOCK,
                 new ParameterizedTypeReference<>() {
                 });
     }
