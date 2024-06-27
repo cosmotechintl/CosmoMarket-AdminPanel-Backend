@@ -12,7 +12,7 @@ import org.mapstruct.ReportingPolicy;
 import java.util.Date;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public abstract class BlockLogMapper extends ModelBase {
+public abstract class BlockLogMapper {
     public AdminBlockLog mapToEntity(AdminBlockLogModel adminBlockLogModel) {
         AdminBlockLog adminBlockLog = new AdminBlockLog();
         adminBlockLog.setRemarks(adminBlockLogModel.getRemarks());
