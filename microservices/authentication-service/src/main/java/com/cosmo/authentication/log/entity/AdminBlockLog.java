@@ -13,6 +13,7 @@ import java.util.Date;
 @Entity
 @Table(name = "admin_block_log")
 public class AdminBlockLog extends AbstractEntity {
+    @Column(name="remarks")
     private String remarks;
 
     @ManyToOne(optional=true, fetch = FetchType.LAZY)

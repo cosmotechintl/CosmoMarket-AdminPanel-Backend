@@ -23,8 +23,8 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping(ApiConstant.CREATE)
-   public Mono<ApiResponse> createAdminUser(@RequestBody @Valid CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog){
-        return adminService.createAdminUser(createAdminModel,createAdminEmailLog);
+   public Mono<ApiResponse> createAdminUser(@RequestBody @Valid CreateAdminModel createAdminModel){
+        return adminService.createAdminUser(createAdminModel);
     }
     @PostMapping()
     public Mono<ApiResponse<?>> getAllAdminUsers(@RequestBody @Valid SearchParam searchParam){
