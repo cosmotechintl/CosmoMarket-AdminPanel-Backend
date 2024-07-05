@@ -29,5 +29,6 @@ public class ApiConstant {
     public static final String CHANGE_PASSWORD = "change-password";
     public static final String EMAIL_TEMPLATE = "emailTemplate";
     public static final String SET_PASSWORD = "setPassword";
+    public static final String VENDOR_CATEGORY = "vendorCategory";
 
 }

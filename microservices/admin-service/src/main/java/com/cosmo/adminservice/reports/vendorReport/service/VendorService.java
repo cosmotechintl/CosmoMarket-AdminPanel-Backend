@@ -10,4 +10,5 @@ public interface VendorService {
     Mono<ApiResponse<Object>> createVendor(CreateVendorModel createVendorModel);
     Mono<ApiResponse<Object>> getAllVendors(SearchParam searchParam);
     Mono<ApiResponse<Object>> getVendorDetails(FetchVendorDetail fetchVendorDetail);
+    Mono<ApiResponse<Object>> getCategories(SearchParam searchParam);
 }

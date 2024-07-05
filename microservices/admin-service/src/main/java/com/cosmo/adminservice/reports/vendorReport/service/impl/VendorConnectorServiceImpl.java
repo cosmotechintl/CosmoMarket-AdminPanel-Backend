@@ -53,5 +53,13 @@ public class VendorConnectorServiceImpl extends AbstractConnectorService impleme
                 });
     }
 
+    @Override
+    public Mono<ApiResponse<Object>> getCategories(SearchParam searchParam) {
+        return connectToService(searchParam,
+                ApiConstant.VENDOR_CATEGORY+ApiConstant.SLASH+ApiConstant.GET,
+                new ParameterizedTypeReference<>() {
+                });
+    }
+
 
 }

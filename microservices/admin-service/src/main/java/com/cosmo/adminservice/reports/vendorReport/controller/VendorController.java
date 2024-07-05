@@ -32,4 +32,8 @@ public class VendorController {
     public Mono<ApiResponse<Object>> getVendorDetails(@RequestBody @Valid FetchVendorDetail fetchVendorDetail){
         return vendorService.getVendorDetails(fetchVendorDetail);
     }
+    @PostMapping(ApiConstant.VENDOR_CATEGORY+ApiConstant.SLASH+ApiConstant.GET)
+    public Mono<ApiResponse<Object>> getCategories(@RequestBody @Valid SearchParam searchParam){
+        return vendorService.getCategories(searchParam);
+    }
 }
