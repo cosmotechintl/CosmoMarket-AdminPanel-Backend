@@ -1,6 +1,11 @@
 package com.cosmo.authentication.user.mapper;
 
 import com.cosmo.authentication.accessgroup.repo.AccessGroupRepository;
+import com.cosmo.authentication.core.constant.EmailSubjectConstant;
+import com.cosmo.authentication.core.service.MailService;
+import com.cosmo.authentication.emailtemplate.entity.AdminEmailLog;
+import com.cosmo.authentication.emailtemplate.mapper.AdminEmailLogMapper;
+import com.cosmo.authentication.emailtemplate.model.request.SendEmailRequest;
 import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
 import com.cosmo.authentication.user.entity.Admin;
 import com.cosmo.authentication.user.model.AdminUserDetailDto;
@@ -16,6 +21,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,37 +38,52 @@ public abstract class AdminMapper {
     protected PasswordEncoder passwordEncoder;
     @Autowired
     protected AdminEmailLogRepository adminEmailLogRepository;
-   public Admin mapToEntity(CreateAdminModel createAdminModel){
-       Admin admin= new Admin();
+    @Autowired
+    protected AdminEmailLogMapper adminEmailLogMapper;
+    @Autowired
+    protected MailService mailService;
 
-       admin.setName(createAdminModel.getName());
-       admin.setMobileNumber(createAdminModel.getMobileNumber());
-       admin.setAddress(createAdminModel.getAddress());
-       admin.setEmail(createAdminModel.getEmail());
-       admin.setAccessGroup(accessGroupRepository.findByName(createAdminModel.getAccessGroup().getName()).orElseThrow(
-               ()-> new ResourceNotFoundException("access group not found")
-       ));
-       admin.setUsername(createAdminModel.getEmail());
-       admin.setActive(false);
-       admin.setStatus(statusRepository.findByName(StatusConstant.PENDING.getName()));
-       admin.setSuperAdmin(false);
-       return admin;
-   }
-   public Admin updateAdminUser(UpdateAdminRequest request, Admin admin){
-       admin.setName(request.getName());
-       admin.setMobileNumber(request.getMobileNumber());
-       admin.setAddress(request.getAddress());
-       admin.setAccessGroup(accessGroupRepository.findByName(request.getAccessGroup().getName()).orElseThrow(
-               ()-> new ResourceNotFoundException("access group not found")
-       ));
-       return admin;
-   }
+    public Admin mapToEntity(CreateAdminModel createAdminModel) {
+        Admin admin = new Admin();
 
-   public abstract SearchAdminUserResponse entityToResponse(Admin admin);
+        admin.setName(createAdminModel.getName());
+        admin.setMobileNumber(createAdminModel.getMobileNumber());
+        admin.setAddress(createAdminModel.getAddress());
+        admin.setEmail(createAdminModel.getEmail());
+        admin.setAccessGroup(accessGroupRepository.findByName(createAdminModel.getAccessGroup().getName()).orElseThrow(
+                () -> new ResourceNotFoundException("access group not found")
+        ));
+        admin.setUsername(createAdminModel.getEmail());
+        admin.setActive(false);
+        admin.setStatus(statusRepository.findByName(StatusConstant.PENDING.getName()));
+        admin.setSuperAdmin(false);
+        Admin savedAdmin = adminRepository.save(admin);
 
-   public List<SearchAdminUserResponse> getAdminUserResponses(List<Admin> admins){
-       return admins.stream().map(this::entityToResponse).collect(Collectors.toList());
-   }
+        AdminEmailLog adminEmailLog = adminEmailLogMapper.mapToEntity(savedAdmin);
+        SendEmailRequest sendEmailRequest = new SendEmailRequest();
+        sendEmailRequest.setRecipient(savedAdmin.getEmail());
+        sendEmailRequest.setSubject(EmailSubjectConstant.EMAIL_VERIFICATION);
+        sendEmailRequest.setMessage(adminEmailLog.getMessage());
+        mailService.sendEmail(sendEmailRequest);
+        return admin;
+    }
+
+    public Admin updateAdminUser(UpdateAdminRequest request, Admin admin) {
+        admin.setName(request.getName());
+        admin.setMobileNumber(request.getMobileNumber());
+        admin.setAddress(request.getAddress());
+        admin.setAccessGroup(accessGroupRepository.findByName(request.getAccessGroup().getName()).orElseThrow(
+                () -> new ResourceNotFoundException("access group not found")
+        ));
+        return admin;
+    }
+
+    public abstract SearchAdminUserResponse entityToResponse(Admin admin);
+
+    public List<SearchAdminUserResponse> getAdminUserResponses(List<Admin> admins) {
+        return admins.stream().map(this::entityToResponse).collect(Collectors.toList());
+    }
+
     public abstract AdminUserDetailDto getAdminUserDetails(Admin admin);
 
 }

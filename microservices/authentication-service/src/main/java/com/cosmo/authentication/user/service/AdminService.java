@@ -16,7 +16,7 @@ import java.security.Principal;
 
 public interface AdminService {
 
-    Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog);
+    Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel);
     Mono<ApiResponse<?>> getAllAdminUsers(SearchParam searchParam);
     Mono<ApiResponse<?>> getAdminUserDetails(FetchAdminDetail fetchAdminDetail);
     Mono<ApiResponse<?>> updateAdminUser(UpdateAdminRequest updateAdminRequest);

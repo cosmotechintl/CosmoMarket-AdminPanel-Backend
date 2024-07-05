@@ -1,13 +1,9 @@
 package com.cosmo.authentication.user.service.impl;
 
-import com.cosmo.authentication.core.constant.EmailSubjectConstant;
 import com.cosmo.authentication.core.service.MailService;
 import com.cosmo.authentication.emailtemplate.entity.AdminEmailLog;
 import com.cosmo.authentication.emailtemplate.mapper.AdminEmailLogMapper;
-import com.cosmo.authentication.emailtemplate.model.CreateAdminEmailLog;
-import com.cosmo.authentication.emailtemplate.model.request.SendEmailRequest;
 import com.cosmo.authentication.emailtemplate.repo.AdminEmailLogRepository;
-import com.cosmo.authentication.emailtemplate.repo.EmailTemplateRepository;
 import com.cosmo.authentication.log.entity.AdminBlockLog;
 import com.cosmo.authentication.log.entity.AdminDeleteLog;
 import com.cosmo.authentication.log.mapper.BlockLogMapper;
@@ -34,17 +30,12 @@ import com.cosmo.common.model.SearchResponseWithMapperBuilder;
 import com.cosmo.common.repository.StatusRepository;
 import com.cosmo.common.service.SearchResponse;
 import com.cosmo.common.util.ResponseUtil;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.security.Principal;
 import java.util.*;
 
 @Service
@@ -63,9 +54,10 @@ public class AdminServiceImpl implements AdminService {
     private final AdminBlockLogRepository adminBlockLogRepository;
     private final DeleteLogMapper deleteLogMapper;
     private final BlockLogMapper blockLogMapper;
+
     @Override
     @Transactional
-    public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel, CreateAdminEmailLog createAdminEmailLog) {
+    public Mono<ApiResponse> createAdminUser(CreateAdminModel createAdminModel) {
         Optional<Admin> existedAdminUser = adminRepository.findByUsername(createAdminModel.getEmail());
         Optional<Admin> existedNumber = adminRepository.findByMobileNumber(createAdminModel.getMobileNumber());
 
@@ -77,23 +69,8 @@ public class AdminServiceImpl implements AdminService {
             return Mono.just(ResponseUtil.getFailureResponse("The entered mobile number is already linked to another account. Please use a different number"));
         }
 
-        try {
-            Admin admin = adminMapper.mapToEntity(createAdminModel);
-            adminRepository.save(admin);
-
-            AdminEmailLog adminEmailLog = adminEmailLogMapper.mapToEntity(createAdminEmailLog, admin);
-            adminEmailLogRepository.save(adminEmailLog);
-
-            SendEmailRequest sendEmailRequest = new SendEmailRequest();
-            sendEmailRequest.setRecipient(admin.getEmail());
-            sendEmailRequest.setSubject(EmailSubjectConstant.EMAIL_VERIFICATION);
-            sendEmailRequest.setMessage(adminEmailLog.getMessage());
-            mailService.sendEmail(sendEmailRequest);
-
-            return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin User Created Successfully"));
-        } catch (Exception ex) {
-            return Mono.just(ResponseUtil.getFailureResponse("Failed to create admin user: " + ex.getMessage()));
-        }
+        adminMapper.mapToEntity(createAdminModel);
+        return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin User Created Successfully"));
     }
 
     @Override
@@ -122,14 +99,14 @@ public class AdminServiceImpl implements AdminService {
             return Mono.just(ResponseUtil.getFailureResponse("The mobile number is linked to another account."));
         }
         Optional<Admin> checkAdmin = adminRepository.findByEmail(updateAdminRequest.getEmail());
-        if(checkAdmin.isPresent()){
+        if (checkAdmin.isPresent()) {
             Admin admin = checkAdmin.get();
             if (StatusConstant.BLOCKED.getName().equals(admin.getStatus().getName()) || StatusConstant.DELETED.getName().equals(admin.getStatus().getName())) {
                 return Mono.just(ResponseUtil.getNotFoundResponse("Admin user not found"));
             } else {
                 Admin updatedAdmin = adminMapper.updateAdminUser(updateAdminRequest, admin);
                 adminRepository.save(updatedAdmin);
-        }
+            }
         }
         return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user updated successfully"));
     }
@@ -186,14 +163,14 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Mono<ApiResponse<?>> unblockAdminUser(UnblockAdminUserRequest unblockAdminRequest) {
         Optional<Admin> checkAdmin = adminRepository.findByEmail(unblockAdminRequest.getEmail());
-        if (checkAdmin.isPresent()){
+        if (checkAdmin.isPresent()) {
             Admin admin = checkAdmin.get();
             if (StatusConstant.BLOCKED.getName().equals(admin.getStatus().getName())) {
                 admin.setStatus(statusRepository.findByName(StatusConstant.ACTIVE.getName()));
                 admin.setActive(true);
                 adminRepository.save(admin);
                 return Mono.just(ResponseUtil.getSuccessfulApiResponse("Admin user unblocked successfully"));
-        }
+            }
         }
         return Mono.just(ResponseUtil.getFailureResponse("Admin user unblock failed"));
     }
