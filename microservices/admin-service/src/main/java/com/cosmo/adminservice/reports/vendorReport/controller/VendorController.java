@@ -2,6 +2,7 @@ package com.cosmo.adminservice.reports.vendorReport.controller;
 
 import com.cosmo.adminservice.reports.vendorReport.model.request.FetchVendorDetail;
 import com.cosmo.adminservice.reports.vendorReport.model.CreateVendorModel;
+import com.cosmo.adminservice.reports.vendorReport.model.request.UpdateVendorDetailRequest;
 import com.cosmo.adminservice.reports.vendorReport.service.VendorService;
 import com.cosmo.common.constant.ApiConstant;
 import com.cosmo.common.model.ApiResponse;
@@ -32,5 +33,9 @@ public class VendorController {
     @PostMapping(ApiConstant.VENDOR_CATEGORY+ApiConstant.SLASH+ApiConstant.GET)
     public Mono<ApiResponse<Object>> getCategories(@RequestBody @Valid SearchParam searchParam){
         return vendorService.getCategories(searchParam);
+    }
+    @PostMapping(ApiConstant.UPDATE)
+    public Mono<ApiResponse<Object>> updateVendor(@RequestBody @Valid UpdateVendorDetailRequest request){
+        return vendorService.updateVendor(request);
     }
 }
