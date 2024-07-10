@@ -1,5 +1,6 @@
 package com.cosmo.adminservice.reports.vendorReport.controller;
 
+import com.cosmo.adminservice.reports.vendorReport.model.CreateVendorCategoryModel;
 import com.cosmo.adminservice.reports.vendorReport.model.request.FetchVendorDetail;
 import com.cosmo.adminservice.reports.vendorReport.model.CreateVendorModel;
 import com.cosmo.adminservice.reports.vendorReport.model.request.UpdateVendorDetailRequest;
@@ -37,5 +38,9 @@ public class VendorController {
     @PostMapping(ApiConstant.UPDATE)
     public Mono<ApiResponse<Object>> updateVendor(@RequestBody @Valid UpdateVendorDetailRequest request){
         return vendorService.updateVendor(request);
+    }
+    @PostMapping(ApiConstant.VENDOR_CATEGORY+ApiConstant.SLASH+ApiConstant.CREATE)
+    public Mono<ApiResponse<Object>> createVendorCategory(@RequestBody @Valid CreateVendorCategoryModel categoryModel){
+        return vendorService.createVendorCategory(categoryModel);
     }
 }

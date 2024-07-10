@@ -1,5 +1,6 @@
 package com.cosmo.adminservice.reports.vendorReport.service.impl;
 
+import com.cosmo.adminservice.reports.vendorReport.model.CreateVendorCategoryModel;
 import com.cosmo.adminservice.reports.vendorReport.model.CreateVendorModel;
 import com.cosmo.adminservice.reports.vendorReport.model.request.FetchVendorDetail;
 import com.cosmo.adminservice.reports.vendorReport.model.request.UpdateVendorDetailRequest;
@@ -65,7 +66,15 @@ public class VendorConnectorServiceImpl extends AbstractConnectorService impleme
     @Override
     public Mono<ApiResponse<Object>> updateVendor(UpdateVendorDetailRequest updateVendorDetailRequest) {
         return connectToService(updateVendorDetailRequest,
-                ApiConstant.VENDOR_CATEGORY+ApiConstant.SLASH+ApiConstant.GET,
+                ApiConstant.VENDOR+ApiConstant.SLASH+ApiConstant.UPDATE,
+                new ParameterizedTypeReference<>() {
+                });
+    }
+
+    @Override
+    public Mono<ApiResponse<Object>> createVendorCategory(CreateVendorCategoryModel categoryModel) {
+        return connectToService(categoryModel,
+                ApiConstant.VENDOR_CATEGORY+ApiConstant.SLASH+ApiConstant.CREATE,
                 new ParameterizedTypeReference<>() {
                 });
     }

@@ -1,5 +1,6 @@
 package com.cosmo.adminservice.reports.vendorReport.service;
 
+import com.cosmo.adminservice.reports.vendorReport.model.CreateVendorCategoryModel;
 import com.cosmo.adminservice.reports.vendorReport.model.request.FetchVendorDetail;
 import com.cosmo.adminservice.reports.vendorReport.model.CreateVendorModel;
 import com.cosmo.adminservice.reports.vendorReport.model.request.UpdateVendorDetailRequest;
@@ -13,4 +14,5 @@ public interface VendorService {
     Mono<ApiResponse<Object>> getVendorDetails(FetchVendorDetail fetchVendorDetail);
     Mono<ApiResponse<Object>> getCategories(SearchParam searchParam);
     Mono<ApiResponse<Object>> updateVendor(UpdateVendorDetailRequest updateVendorDetailRequest);
+    Mono<ApiResponse<Object>> createVendorCategory(CreateVendorCategoryModel categoryModel);
 }
