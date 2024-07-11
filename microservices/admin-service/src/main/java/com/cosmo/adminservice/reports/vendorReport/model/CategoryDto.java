@@ -10,4 +10,7 @@ import lombok.Setter;
 public class CategoryDto extends ModelBase {
     @NotBlank(message = "Name is required")
     private String name;
+
+    @NotBlank(message = "Description cannot be null")
+    private String description;
 }
