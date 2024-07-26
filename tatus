@@ -1,0 +1,18 @@
+[33mcommit d2519e99dc19eef585449fa6a9eb515be061c587[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: a8f1d47 698293d
+Author: suman.gajmer@f1soft.com <suman.gajmer@f1soft.com>
+Date:   Fri May 31 18:08:07 2024 +0545
+
+    Merge branch 'master'
+
+[33mcommit 698293dbeae5a3dc6ac390f17d4a1e6caaffad41[m
+Author: suman.gajmer@f1soft.com <suman.gajmer@f1soft.com>
+Date:   Fri May 31 18:06:57 2024 +0545
+
+    added superadmin
+
+[33mcommit a8f1d474716c6248bcb155603b93b1074f674fed[m
+Author: suman.gajmer@f1soft.com <suman.gajmer@f1soft.com>
+Date:   Fri May 31 12:39:28 2024 +0545
+
+    first commit
