@@ -21,8 +21,6 @@ import com.cosmo.common.service.SearchResponse;
 import com.cosmo.common.util.ResponseUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -32,13 +30,13 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AccessGroupServiceImpl implements AccessGroupService {
-    private static final Logger log = LoggerFactory.getLogger(AccessGroupServiceImpl.class);
     private final AccessGroupRepository accessGroupRepository;
     private final AccessGroupMapper accessGroupMapper;
     private final AccessGroupRoleMapMapper accessGroupRoleMapMapper;
     private final SearchResponse searchResponse;
     private final AccessGroupSearchRepository accessGroupSearchRepository;
     private final StatusRepository statusRepository;
+
 
     @Override
     @Transactional
@@ -108,4 +106,6 @@ public class AccessGroupServiceImpl implements AccessGroupService {
             return Mono.just(ResponseUtil.getSuccessfulApiResponse(accessGroupDetailDto, "Access group fetched successfully"));
         }
     }
+
+
 }
