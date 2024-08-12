@@ -21,6 +21,7 @@ import com.cosmo.common.service.SearchResponse;
 import com.cosmo.common.util.ResponseUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -106,6 +107,5 @@ public class AccessGroupServiceImpl implements AccessGroupService {
             return Mono.just(ResponseUtil.getSuccessfulApiResponse(accessGroupDetailDto, "Access group fetched successfully"));
         }
     }
-
 
 }

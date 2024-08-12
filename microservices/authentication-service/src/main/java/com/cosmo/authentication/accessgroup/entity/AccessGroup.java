@@ -4,6 +4,9 @@ import com.cosmo.common.abstractEntity.AbstractEntity;
 import com.cosmo.common.entity.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import java.util.Date;
 import java.util.List;
 

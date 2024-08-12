@@ -8,10 +8,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.annotations.Cache;
 
 import java.util.Collection;
 import java.util.Date;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 @Table(name = "admin")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Admin extends AbstractEntity implements UserDetails {
 
     @Column(name = "name", nullable = false)

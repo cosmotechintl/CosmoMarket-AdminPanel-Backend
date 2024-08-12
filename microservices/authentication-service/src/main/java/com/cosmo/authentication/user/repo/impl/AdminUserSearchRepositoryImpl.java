@@ -46,4 +46,4 @@ public class AdminUserSearchRepositoryImpl implements AdminUserSearchRepository 
                 .setParameter("status", SearchParamUtil.getString(searchParam, STATUS))
                 .getResultList();
     }
-    }
+}
